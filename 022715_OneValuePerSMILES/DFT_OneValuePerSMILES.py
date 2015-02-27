@@ -157,9 +157,388 @@ for row in csv_f:
 f.close()
 
 ###############################################################################
+list_x = []
+list_y = []
+for key,value in dict.items(dic_SMILES_x_y):
+    if len(value) == 2:
+        list_x.append(value[0])
+        list_y.append(value[1])
+    else:
+        pass
+#############  function and Variable (copy from DFTdata_cal_1223.py)###########
+        
+#Used to extend the linear regresion and compound plot lines so that they go past
+#the max and min of their data sets
+def extended(ax, x, y, **args):
 
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    x_ext = np.linspace(xlim[0], xlim[1], 100)
+    p = np.polyfit(x, y , deg=1)
+    y_ext = np.poly1d(p)(x_ext)
+    ax.plot(x_ext, y_ext, **args)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    return ax       
+    
+## Save LR data into file
+def write_all(m,b,r_squared,property,x,y):
+    mm = str(m)
+    bb = str(b)
+    rr = str(r_squared)
+    str10 = "%s/projectionvalues.txt" %(name_directory)
+    txt = open(str10, 'a')
+    txt.write(property),txt.write("_"),txt.write(x),txt.write("_"),
+    txt.write(y),txt.write("                    "),txt.write(mm),txt.write("     "),
+    txt.write(bb),txt.write("     "),txt.write(rr),txt.write("\n")
+    txt.close()
+    
+def write_outlier(m,b,r_squared,property,x,y,percentage):
+    mm = str(m)
+    bb = str(b)
+    rr = str(r_squared)
+    str10 = "%s/projectionvalues.txt" %(name_directory)
+    txt = open(str10, 'a')
+    txt.write(property),txt.write("_"),txt.write(x),txt.write("_"),
+    txt.write(y),txt.write("_outlier_"),txt.write(percentage),txt.write("%"),
+    txt.write("      "),txt.write(mm),txt.write("     "),
+    txt.write(bb),txt.write("     "),txt.write(rr),txt.write("\n")
+    txt.close()
+
+def write_remained(m,b,r_squared,property,x,y,percentage):
+    mm = str(m)
+    bb = str(b)
+    rr = str(r_squared)
+    str10 = "%s/projectionvalues.txt" %(name_directory)
+    txt = open(str10, 'a')
+    txt.write(property),txt.write("_"),txt.write(x),txt.write("_"),
+    txt.write(y),txt.write("_fitted_"),txt.write(percentage),txt.write("%"),
+    txt.write("     "),txt.write(mm),txt.write("     "),
+    txt.write(bb),txt.write("     "),txt.write(rr),txt.write("\n")
+    txt.close()
+### property
+if args.property == 1:
+    pro_name = "HOMO"
+    line_color = "Blue"
+    num1 = -9.00  #for ax.set_xlim and ax.set_ylim
+    num2 = -3.00  #for ax.set_xlim and ax.set_ylim
+elif args.property == 2:
+    pro_name = "LUMO"
+    line_color = "Red"
+    num1 = -6.00 #for ax.set_xlim and ax.set_ylim
+    num2 = 3.00  #for ax.set_xlim and ax.set_ylim
+elif args.property == 3:
+    pro_name = "Dipole"
+    line_color = "Violet"
+    num1 = -1.00  #for ax.set_xlim and ax.set_ylim
+    num2 = 14.00  #for ax.set_xlim and ax.set_ylim
+elif args.property == 4:
+    pro_name = "Gap"
+    line_color = "Green"
+    num1 = 0.00  #for ax.set_xlim and ax.set_ylim
+    num2 = 10.00  #for ax.set_xlim and ax.set_ylim
+
+### x-flavor, y-flavor
+if args.x_flavor == 1:
+    x_name = "BP86s"
+    x_fname = "BP86/SVP"
+    x_num = "1"
+#    #Used to get rid of obvious outliers that have been brought into the data 
+#    if args.property == 1: #HOMO
+#    
+#        if args.y_flavor != 6: # for all y flavors except HF  #HOMO,BP86s
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.24) and i[0]<=(-0.12):
+#                    if i[1]>=(-0.30) and i[1]<=(-0.14):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#        else: # only for HF (y flavor) #HOMO,BP86s
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.24) and i[0]<=(-0.12):
+#                    if i[1]>=(-0.60) and i[1]<=(-0.14):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#    ####                
+#    elif args.property == 2: #LUMO,BP86s
+#    
+#        if args.y_flavor != 6: # for all y flavors except HF  #LUMO,BP86s
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.20) and i[0]<=(0.0):
+#                    if i[1]>=(-0.20) and i[1]<=(0.05):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#        else: # only for HF (y flavor) #LUMO,BP86s
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.20) and i[0]<=(0.10):
+#                    if i[1]>=(-0.20) and i[1]<=(0.30):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#    ###
+#    elif args.property == 3: #Dipole,BP86s
+#    
+#        if args.y_flavor != 6: # for all y flavors except HF  #Dipole,BP86s
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.10) and i[0]<=(13.0):
+#                    if i[1]>=(-0.10) and i[1]<=(13.0):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#        else: # only for HF (y flavor) #Dipole,BP86s
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.10) and i[0]<=(13.0):
+#                    if i[1]>=(-0.10) and i[1]<=(13.0):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#                    
+#    ###
+#    elif args.property == 4: #Gap,BP86s
+#    
+#        def lrboundaries(s,t):
+#            #i[0] is x, i[1] is y, first term is min, second is max
+#            if i[0]>=(0.0) and i[0]<=(0.15):
+#                if i[1]>=(0.0) and i[1]<=(0.40):
+#                    return True
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#            else:
+#                list_outbound.append(index+3)
+#                return False
+
+        
+            
+        
+        
+elif  args.x_flavor == 2:
+    x_name = "B3LYPs"
+    x_fname = "B3LYP/SVP"
+    x_num = "2"
+    #Used to get rid of obvious outliers that have been brought into the data
+#    if args.property == 1: #HOMO,B3LYPs
+#    
+#        if args.y_flavor != 6: # for all y flavors except HF #HOMO
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.28) and i[0]<=(-0.14):
+#                    if i[1]>=(-0.30) and i[1]<=(-0.14):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#        else: # only for HF (y flavor) #HOMO
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.24) and i[0]<=(-0.12):
+#                    if i[1]>=(-0.60) and i[1]<=(-0.14):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#    ###
+#    elif args.property == 2: #LUMO,B3LYPs
+#    
+#        if args.y_flavor != 6: # for all y flavors except HF  #LUMO,B3LYPs
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.20) and i[0]<=(0.05):
+#                    if i[1]>=(-0.20) and i[1]<=(0.05):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#        else: # only for HF (y flavor) #LUMO,B3LYPs
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.20) and i[0]<=(0.10):
+#                    if i[1]>=(-0.20) and i[1]<=(0.30):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#    ###
+#    elif args.property == 3: #Dipole,B3LYPs
+#    
+#        if args.y_flavor != 6: # for all y flavors except HF  #Dipole,B3LYPs
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.10) and i[0]<=(13.0):
+#                    if i[1]>=(-0.10) and i[1]<=(13.0):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#        else: # only for HF (y flavor) #Dipole,B3LYPs
+#            def lrboundaries(s,t):
+#                #i[0] is x, i[1] is y, first term is min, second is max
+#                if i[0]>=(-0.10) and i[0]<=(13.0):
+#                    if i[1]>=(-0.10) and i[1]<=(13.0):
+#                        return True
+#                    else:
+#                        list_outbound.append(index+3)
+#                    return False
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#    ###
+#    elif args.property == 4: #Gap,B3LYPs
+#    
+#        def lrboundaries(s,t):
+#            #i[0] is x, i[1] is y, first term is min, second is max
+#            if i[0]>=(0.0) and i[0]<=(0.20):
+#                if i[1]>=(0.0) and i[1]<=(0.40):
+#                    return True
+#                else:
+#                    list_outbound.append(index+3)
+#                    return False
+#            else:
+#                list_outbound.append(index+3)
+#                return False
+
+elif  args.x_flavor == 3:
+    x_name = "PBE0s"
+elif  args.x_flavor == 4:
+    x_name = "BHHLYPs"
+elif  args.x_flavor == 5:
+    x_name = "M06s"
+elif  args.x_flavor == 6:
+    x_name = "HFs"
+elif  args.x_flavor == 7:
+    x_name = "BP86t"
+elif  args.x_flavor == 8:
+    x_name = "B3LYPt"
+elif  args.x_flavor == 9:
+    x_name = "PBE0t"
+    
+if args.y_flavor == 1:
+    y_name = "BP86s"
+    y_fname = "BP86/SVP"
+    y_num = "1"
+elif  args.y_flavor == 2:
+    y_name = "B3LYPs"
+    y_fname = "B3LYP/SVP"
+    y_num = "2"
+elif  args.y_flavor == 3:
+    y_name = "PBE0s"
+    y_fname = "PBE0/SVP"
+    y_num = "3"
+elif  args.y_flavor == 4:
+    y_name = "BHHLYPs"
+    y_fname = "BH&HLYP/SVP"
+    y_num = "4"
+elif  args.y_flavor == 5:
+    y_name = "M06s"
+    y_fname = "M06/SVP"
+    y_num = "5"
+elif  args.y_flavor == 6:
+    y_name = "HFs"
+    y_fname = "HF/SVP"
+    y_num = "6"
+elif  args.y_flavor == 7:
+    y_name = "BP86t"
+    y_fname = "BP86/TZVP"
+    y_num = "7"
+elif  args.y_flavor == 8:
+    y_name = "B3LYPt"
+    y_fname = "B3LYP/TZVP"
+    y_num = "8"
+elif  args.y_flavor == 9:
+    y_name = "PBE0t"
+    y_fname = "PBE0/TZVP"
+    y_num = "9"
+
+
+ID_SMILE_X_Y_dis = "DFT_%s_%s%s_%s_%s.csv"% (pro_name, x_num,y_num, x_name, y_name)
+num5 = str(int(args.percent_outlier * 100))
+lr_text_outlier = "DFT_%s_%s%s_%s_%s_outlier_%s.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
+lr_text_fitted = "DFT_%s_%s%s_%s_%s_fitted_%s.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
+name_directory = "DFT_%s_%s_%s%s_%s_%s"% (pro_name,num5,x_num,y_num, x_name, y_name)
+os.makedirs(name_directory)
+invalid_compound = "DFT_invalid_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
+outbound_compound = "DFT_outbound_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
+info_name = "DFT_info_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
+lr_plot = "lr_%s_%s%s_%s_%s.png" % (pro_name,x_num,y_num,x_name, y_name)
+lr_plot_outlier = "lr_%s_%s%s_%s_%s_outlier_%s.png" % (pro_name,x_num,y_num,x_name, y_name, num5)
+lr_plot_remained = "lr_%s_%s%s_%s_%s_fitted_%s.png" % (pro_name, x_num,y_num,x_name, y_name, num5)
+num_percentage = str(args.percent_outlier)
+##############################################################################
 
   
+slope, intercept, r_value, p_value, std_err = stats.linregress(list_x,list_y)
+
+y2 = []   
+for i in list_x:
+    num7 = slope * i + intercept
+    y2.append(num7)
+    
+
+list_1 = zip(list_y,y2)
+array1 = np.asarray(list_1)
+
+list_dis = []
+for i1,i2 in array1:
+    num3 = i2 - i1
+    list_dis.append(num3)
+    
+
+list_2 = zip(y2,list_dis)
+array2 = np.asarray(list_2)
+
+list_percentage = []
+for i_y2, i_dis in array2:
+    num4 = abs(i_dis/i_y2) * 100
+    list_percentage.append(num4)
+
 
 
 
