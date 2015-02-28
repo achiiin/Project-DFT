@@ -838,7 +838,7 @@ csv_f = csv.reader(f)
 for row in csv_f:
   num_Si = num_Si + row[1].count('Si')
   num_se = num_se + row[1].count('se')
-  num_s = num_s + (row[1].count('s') - num_se)
+  num_s = num_s + (row[1].count('s') - row[1].count('se'))
   num_n = num_n + row[1].count('n')
   num_o = num_o + row[1].count('o')
   if row[1].count('Si') > 0 and row[1].count('se') >0:
@@ -864,7 +864,7 @@ csv_f = csv.reader(f)
 for row in csv_f:
   num_Si = num_Si + row[1].count('Si')
   num_se = num_se + row[1].count('se')
-  num_s = num_s + (row[1].count('s') - num_se)
+  num_s = num_s + (row[1].count('s') - row[1].count('se'))
   num_n = num_n + row[1].count('n')
   num_o = num_o + row[1].count('o')
   if row[1].count('Si') > 0 and row[1].count('se') >0:
