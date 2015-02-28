@@ -518,7 +518,7 @@ name_directory = "DFT_%s_%s_%s%s_%s_%s"% (pro_name,num5,x_num,y_num, x_name, y_n
 os.makedirs(name_directory)
 invalid_compound = "DFT_invalid_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
 outbound_compound = "DFT_outbound_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
-info_name = "DFT_info_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
+info_name = "DFT_info_%s_%s%s_%s_%s.txt"% (pro_name, x_num,y_num, x_name, y_name)
 lr_plot = "lr_%s_%s%s_%s_%s.png" % (pro_name,x_num,y_num,x_name, y_name)
 lr_plot_outlier = "lr_%s_%s%s_%s_%s_outlier_%s.png" % (pro_name,x_num,y_num,x_name, y_name, num5)
 lr_plot_remained = "lr_%s_%s%s_%s_%s_fitted_%s.png" % (pro_name, x_num,y_num,x_name, y_name, num5)
@@ -614,6 +614,74 @@ txt_info.close()
 
 
 ###########################Plot for all compounds##################
+x1_3 = []
+y1_3 = []
+for i in list_x:
+    if args.property == 3:  #only for Dipole
+        x1_3.append(i)
+    else:
+        x1_3.append(i*27.21139570)
+        
+for i in list_y:
+    if args.property == 3:  #only for Dipole
+        y1_3.append(i)
+    else:
+        y1_3.append(i*27.21139570)
+
+#linear regression using stats.linregress
+slope, intercept, r_value, p_value, std_err = stats.linregress(x1_3,y1_3)
+r_squared= r_value**2
+#
+#this will find your y-intercept and slope of your linear regression line and 
+#then will create points where a line is plotted on
+(m,b)=polyfit(x1_3,y1_3,1)
+yp=polyval([m,b],x1_3)
+yp1=yp
+stand = (np.std(x1_3) + np.std(y1_3))/2
+print 'r-squared: ', r_squared
+print 'stand: ', stand
+
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['mathtext.default'] = 'regular'
+fig= plt.figure()
+ax = fig.add_subplot(111, aspect='equal')
+ax.scatter(x1_3,y1_3,s=0.5,color='Black')
+
+
+textstr = '$R^2:\ \ \ \ \ \ \  %.4f$\n$slope:\ \ \ %.4f$\n$shift:\ \ \ \ \ %.4f$'%(r_squared, m, b)
+props = dict(boxstyle='round', facecolor= 'White', alpha=1.0)
+
+if args.result_box == True and args.result_box1 == True:
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=11,
+            verticalalignment='top', bbox=props)
+        
+write_all(m,b,r_squared,pro_name,x_name,y_name)
+
+if args.property == 1:
+    ax.set_xlabel(r'$\epsilon\ $HOMO (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\epsilon\ $HOMO (%s) [eV]'%(y_fname), fontsize='x-large')
+elif args.property == 2:
+    ax.set_xlabel(r'$\epsilon\ $LUMO (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\epsilon\ $LUMO (%s) [eV]'%(y_fname), fontsize='x-large')
+elif args.property == 3:
+    ax.set_xlabel(r'$\mu\ $  (%s) [D]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\mu\ $  (%s) [D]'%(y_fname), fontsize='x-large')
+elif args.property == 4:
+    ax.set_xlabel(r'$\Delta\ \epsilon\ $  (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\Delta\ \epsilon\ $  (%s) [eV]'%(y_fname), fontsize='x-large')
+
+ax.tick_params(labelsize='large')
+ax.set_xlim((num1),(num2))
+ax.set_ylim((num1),(num2))
+
+if args.lr_line == True and args.lr_line1 == True:
+    ax = extended(ax, x1_3, yp, lw=2.4, color = line_color)
+
+ax.grid(True)
+str10 = "%s/%s" %(name_directory,lr_plot)
+plt.savefig(str10)
+
+
 
 
 
