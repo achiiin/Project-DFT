@@ -92,7 +92,7 @@ parser.add_argument("-lr2","--lr_line2",action='store_false',default=True,
 parser.add_argument("-lr3","--lr_line3",action='store_false',default=True,
                     help="Hide the LinearReg line for remaining pool.")
                    
-args = parser.parse_args('1 0.3 -x 1 -y 6 -lr2 -lr3'.split())
+args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
 #args = parser.parse_args()
 ###############################Function #######################################
 def record_time(part,start,timenow,timelast):
@@ -681,6 +681,72 @@ ax.grid(True)
 str10 = "%s/%s" %(name_directory,lr_plot)
 plt.savefig(str10)
 
+###########################Plot for outliers############################
+x_outliers_2 = []
+y_outliers_2 = []
+for i in x_outliers:
+    if args.property == 3:  #only for Dipole
+        x_outliers_2.append(i)
+    else:
+        x_outliers_2.append(i*27.21139570)
+        
+for i in y_outliers:
+    if args.property == 3:  #only for Dipole
+        y_outliers_2.append(i)
+    else:
+        y_outliers_2.append(i*27.21139570)
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(x_outliers_2,y_outliers_2)
+r_squared= r_value**2
+#
+#this will find your y-intercept and slope of your linear regression line and 
+#then will create points where a line is plotted on
+(m2,b2)=polyfit(x_outliers_2,y_outliers_2,1)
+yp2=polyval([m2,b2],x_outliers_2)
+yp1=yp2
+stand = (np.std(x_outliers_2) + np.std(y_outliers_2))/2
+print 'r-squared: ', r_squared
+print 'stand: ', stand
+
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['mathtext.default'] = 'regular'
+fig= plt.figure()
+ax = fig.add_subplot(111, aspect='equal')
+ax.scatter(x_outliers_2,y_outliers_2,s=0.5,color='Black')
+
+
+textstr = '<Outliers>\n$R^2:\ \ \ \ \ \ \  %.4f$\n$slope:\ \ \ %.4f$\n$shift:\ \ \ \ \ %.4f$'%(r_squared, m2, b2)
+props = dict(boxstyle='round', facecolor= 'White', alpha=1.0)
+
+if args.result_box == True and args.result_box2 == True:
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=11,
+            verticalalignment='top', bbox=props)
+        
+write_outlier(m2,b2,r_squared,pro_name,x_name,y_name,num_percentage)
+
+if args.property == 1:
+    ax.set_xlabel(r'$\epsilon\ $HOMO (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\epsilon\ $HOMO (%s) [eV]'%(y_fname), fontsize='x-large')
+elif args.property == 2:
+    ax.set_xlabel(r'$\epsilon\ $LUMO (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\epsilon\ $LUMO (%s) [eV]'%(y_fname), fontsize='x-large')
+elif args.property == 3:
+    ax.set_xlabel(r'$\mu\ $  (%s) [D]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\mu\ $  (%s) [D]'%(y_fname), fontsize='x-large')
+elif args.property == 4:
+    ax.set_xlabel(r'$\Delta\ \epsilon\ $  (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\Delta\ \epsilon\ $  (%s) [eV]'%(y_fname), fontsize='x-large')
+
+ax.tick_params(labelsize='large')
+ax.set_xlim((num1),(num2))
+ax.set_ylim((num1),(num2))
+
+if args.lr_line == True and args.lr_line2 == True:
+    ax = extended(ax, x_outliers_2, yp2, lw=2.4, color = line_color)
+#ax.plot(x1,yp,'green',linewidth=1.0)
+ax.grid(True)
+str11 = "%s/%s" %(name_directory,lr_plot_outlier)
+plt.savefig(str11)
 
 
 
