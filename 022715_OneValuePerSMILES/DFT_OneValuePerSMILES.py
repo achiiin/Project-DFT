@@ -572,8 +572,48 @@ with open(str4, "wb") as f:
     writer.writerows(list_3)
     
 
+count_num = 0
+list_4 = []
+list_5 = []
+x_outliers = []
+y_outliers = []
+x_fitted = []
+y_fitted = []
+for i,line in enumerate(list_percentage):
+    if line >= args.percent_outlier:
+        count_num = count_num + 1
+        item_1 = [i+1] + list_3[i]
+        list_4.append(item_1)
+        x_outliers.append(x1_2[i])
+        y_outliers.append(y1_2[i])
+    if line < args.percent_outlier:
+        item_2 = [i+1] + list_3[i]
+        list_5.append(item_2)
+        x_fitted.append(x1_2[i])
+        y_fitted.append(y1_2[i])
+        
+str5 = "%s/%s" %(name_directory,lr_text_outlier)
+with open(str5, "wb") as f:
+    writer = csv.writer(f)
+    writer.writerows(list_4)
+
+str6 = "%s/%s" %(name_directory,lr_text_fitted)
+with open(str6, "wb") as f:
+    writer = csv.writer(f)
+    writer.writerows(list_5)
+    
+str9 = "%s/%s" %(name_directory,info_name)
+txt_info = open(str9, 'a')
+txt_info.write('# of total compounds: '),txt_info.write(str(len(list_x))),txt_info.write('\n')
+txt_info.write('# of outliers: '),txt_info.write(str(len(list_4))),txt_info.write('\n')
+txt_info.write('# of fitted compounds: '),txt_info.write(str(len(list_5))),txt_info.write('\n')
+txt_info.write('Linear regression line:'),txt_info.write('\n')
+txt_info.write('slope = '),txt_info.write(str(slope)),txt_info.write('\n')
+txt_info.write('intercept = '), txt_info.write(str(intercept))
+txt_info.close()   
 
 
+###########################Plot for all compounds##################
 
 
 
