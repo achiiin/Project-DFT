@@ -750,33 +750,73 @@ ax.grid(True)
 str11 = "%s/%s" %(name_directory,lr_plot_outlier)
 plt.savefig(str11)
 
+###########################Plot for the fitted############################
+x_fitted_2 = []
+y_fitted_2 = []
+for i in x_fitted:
+    if args.property == 3:  #only for Dipole
+        x_fitted_2.append(i)
+    else:
+        x_fitted_2.append(i*27.21139570)
+        
+for i in y_fitted:
+    if args.property == 3:  #only for Dipole
+        y_fitted_2.append(i)
+    else:
+        y_fitted_2.append(i*27.21139570)
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(x_fitted_2,y_fitted_2)
+r_squared= r_value**2
+#
+#this will find your y-intercept and slope of your linear regression line and 
+#then will create points where a line is plotted on
+(m3,b3)=polyfit(x_fitted_2,y_fitted_2,1)
+yp2=polyval([m3,b3],x_fitted_2)
+yp1=yp2
+stand = (np.std(x_fitted_2) + np.std(y_fitted_2))/2
+print 'r-squared: ', r_squared
+print 'stand: ', stand
+
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['mathtext.default'] = 'regular'
+fig= plt.figure()
+ax = fig.add_subplot(111, aspect='equal')
+ax.scatter(x_fitted_2,y_fitted_2,s=0.5,color='Black')
 
 
+textstr = '<Fitted>\n$R^2:\ \ \ \ \ \ \  %.4f$\n$slope:\ \ \ %.4f$\n$shift:\ \ \ \ \ %.4f$'%(r_squared, m3, b3)
+props = dict(boxstyle='round', facecolor= 'White', alpha=1.0)
 
+if args.result_box == True and args.result_box3 == True:
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=11,
+            verticalalignment='top', bbox=props)
+        
+write_remained(m3,b3,r_squared,pro_name,x_name,y_name,num_percentage)
 
+if args.property == 1:
+    ax.set_xlabel(r'$\epsilon\ $HOMO (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\epsilon\ $HOMO (%s) [eV]'%(y_fname), fontsize='x-large')
+elif args.property == 2:
+    ax.set_xlabel(r'$\epsilon\ $LUMO (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\epsilon\ $LUMO (%s) [eV]'%(y_fname), fontsize='x-large')
+elif args.property == 3:
+    ax.set_xlabel(r'$\mu\ $  (%s) [D]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\mu\ $  (%s) [D]'%(y_fname), fontsize='x-large')
+elif args.property == 4:
+    ax.set_xlabel(r'$\Delta\ \epsilon\ $  (%s) [eV]'%(x_fname), fontsize='x-large')
+    ax.set_ylabel(r'$\Delta\ \epsilon\ $  (%s) [eV]'%(y_fname), fontsize='x-large')
 
+ax.tick_params(labelsize='large')
+ax.set_xlim((num1),(num2))
+ax.set_ylim((num1),(num2))
 
+if args.lr_line == True and args.lr_line3 == True:
+    ax = extended(ax, x_fitted_2, yp2, lw=2.4, color = line_color)
+#ax.plot(x1,yp,'green',linewidth=1.0)
+ax.grid(True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+str12 = "%s/%s" %(name_directory,lr_plot_remained)
+plt.savefig(str12)
 
 #####
 pr.disable()
