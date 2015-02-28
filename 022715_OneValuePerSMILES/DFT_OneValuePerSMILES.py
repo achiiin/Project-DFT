@@ -542,8 +542,8 @@ for i1,i2 in array1:
     num3 = i2 - i1
     list_dis.append(round(num3,5))
     
-list_2 = zip(y2,list_dis)  ## ((y2-y1)/y2)*100%
-#list_2 = zip(list_y,list_dis)   ## ((y2-y1)/y1)*100%
+#list_2 = zip(y2,list_dis)  ## ((y2-y1)/y2)*100%
+list_2 = zip(list_y,list_dis)   ## ((y2-y1)/y1)*100%
 array2 = np.asarray(list_2)
 
 list_percentage = []
@@ -579,11 +579,14 @@ x_outliers = []
 y_outliers = []
 x_fitted = []
 y_fitted = []
+list_outliersSMILES = []
+list_fittedSMILES = []
+
 for i,line in enumerate(list_percentage):
     if line >= args.percent_outlier:
         count_num = count_num + 1
         item_1 = [i+1] + list_3[i]
-        list_4.append(item_1)
+        list_4.append(item_1) 
         x_outliers.append(x1_2[i])
         y_outliers.append(y1_2[i])
     if line < args.percent_outlier:
@@ -815,6 +818,67 @@ ax.grid(True)
 
 str12 = "%s/%s" %(name_directory,lr_plot_remained)
 plt.savefig(str12)
+################### Counting Atoms ############################################
+
+##outliers SMILES :
+list_Si = []
+list_se = []
+list_s = []
+list_n = []
+list_o = []
+list_Sise = []
+num_Si = 0
+num_se = 0
+num_s = 0
+num_n = 0
+num_o = 0
+num_Sise = 0
+f = open(str5)
+csv_f = csv.reader(f)
+for row in csv_f:
+  num_Si = num_Si + row[1].count('Si')
+  num_se = num_se + row[1].count('se')
+  num_s = num_s + (row[1].count('s') - num_se)
+  num_n = num_n + row[1].count('n')
+  num_o = num_o + row[1].count('o')
+  if row[1].count('Si') > 0 and row[1].count('se') >0:
+      num_Sise = num_Sise + min(row[1].count('Si'),row[1].count('se'))
+
+f.close()
+txt_info = open('%s/CountingAtoms_result.txt'%name_directory, 'a')
+txt_info.write(str5),txt_info.write('\n   <Outliers>\n')
+txt_info.write('Summation,Si,Se,S,N,O,Sise\n')
+txt_info.write('Summation,%d,%d,%d,%d,%d,%d' %(num_Si,num_se,num_s,num_n,num_o,num_Sise))
+txt_info.write('\n')
+txt_info.close()
+
+##fitted SMILES :  
+num_Si = 0
+num_se = 0
+num_s = 0
+num_n = 0
+num_o = 0
+num_Sise = 0
+f = open(str6)
+csv_f = csv.reader(f)
+for row in csv_f:
+  num_Si = num_Si + row[1].count('Si')
+  num_se = num_se + row[1].count('se')
+  num_s = num_s + (row[1].count('s') - num_se)
+  num_n = num_n + row[1].count('n')
+  num_o = num_o + row[1].count('o')
+  if row[1].count('Si') > 0 and row[1].count('se') >0:
+      num_Sise = num_Sise + min(row[1].count('Si'),row[1].count('se'))
+
+f.close()
+txt_info = open('%s/CountingAtoms_result.txt'%name_directory, 'a')
+txt_info.write(str6),txt_info.write('\n   <fitted>\n')
+txt_info.write('Summation,Si,Se,S,N,O,Sise\n')
+txt_info.write('Summation,%d,%d,%d,%d,%d,%d' %(num_Si,num_se,num_s,num_n,num_o,num_Sise))
+txt_info.write('\n')
+txt_info.close()
+
+
 
 #####
 end1 = time.time()
