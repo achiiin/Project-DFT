@@ -19,9 +19,19 @@ SMILES,amount of this SMILES, max, min, median, mean, MAD, SD, CV
 
 
 The ouputs:
+#1. DFT_(property)_(percentage for outliers *100)_(index_xy)_(x_name)_(y_name).csv:
+    A text file with 7 columns which are 
+    ID, SMILE, X value, Y value(y1), predicted Y value(y2), y2-y1, ((y2-y1)/y1)*100%
+    
+    
+#2. DFT_(property)_(index_xy)_(x_name)_(y_name)_outlier_(percentage for outliers *100).csv:
+    Outliers (row number,ID, SMILE, X value, Y value(y1), predicted Y value(y2), y2-y1, ((y2-y1)/y1)*100%)
 
+#3. DFT_(property)_(index_xy)_(x_name)_(y_name)_fitted_(percentage for outliers *100).csv:
+    Fitted compounds ((row number,ID, SMILE, X value, Y value(y1), predicted Y value(y2), y2-y1, ((y2-y1)/y1)*100%))
 
-
+#4. DFT_info_(property)_(index_xy)_(x_name)_(y_name):
+    Information (total amount of compounds & outliers & fitted compounds, linear regression line formula)
 """
 import numpy as np
 import argparse
@@ -89,7 +99,7 @@ def record_time(part,start,timenow,timelast):
 #    str1 = str(part)
     str2 = str(timenow - timelast)
     str3 = str(timenow - start)
-    str6 = "time_record.txt"
+    str6 = "%s/time_record.txt" %(name_directory)
     txt = open(str6, 'a')
     txt.write(part),txt.write("    "),txt.write(str2),txt.write("    "),
     txt.write(str3),txt.write("\n") 
@@ -159,10 +169,12 @@ f.close()
 ###############################################################################
 list_x = []
 list_y = []
+list_SMILES = []
 for key,value in dict.items(dic_SMILES_x_y):
     if len(value) == 2:
-        list_x.append(value[0])
-        list_y.append(value[1])
+        list_SMILES.append(key)
+        list_x.append(float(value[0]))
+        list_y.append(float(value[1]))
     else:
         pass
 #############  function and Variable (copy from DFTdata_cal_1223.py)###########
@@ -519,7 +531,7 @@ slope, intercept, r_value, p_value, std_err = stats.linregress(list_x,list_y)
 y2 = []   
 for i in list_x:
     num7 = slope * i + intercept
-    y2.append(num7)
+    y2.append(round(num7,5))
     
 
 list_1 = zip(list_y,y2)
@@ -528,16 +540,38 @@ array1 = np.asarray(list_1)
 list_dis = []
 for i1,i2 in array1:
     num3 = i2 - i1
-    list_dis.append(num3)
+    list_dis.append(round(num3,5))
     
 
-list_2 = zip(y2,list_dis)
+list_2 = zip(list_y,list_dis)
 array2 = np.asarray(list_2)
 
 list_percentage = []
-for i_y2, i_dis in array2:
-    num4 = abs(i_dis/i_y2) * 100
-    list_percentage.append(num4)
+for i_y1, i_dis in array2:
+    num4 = abs(i_dis/i_y1) * 100
+    list_percentage.append(round(num4,2))
+    
+x1_2 = []
+y1_2 = []
+for i in list_x:
+    num5 = round(i,3)
+    x1_2.append(num5)
+for i in list_y:
+    num6 = round(i,3)
+    y1_2.append(num6)
+
+
+list_3 = []
+for i in range(0,len(list_x)):
+    list_3.append([list_SMILES[i],x1_2[i],y1_2[i],y2[i],list_dis[i],list_percentage[i]])
+
+
+str4 = "%s/%s" %(name_directory,ID_SMILE_X_Y_dis)
+with open(str4, "wb") as f:
+    writer = csv.writer(f)
+    writer.writerows(list_3)
+    
+
 
 
 
