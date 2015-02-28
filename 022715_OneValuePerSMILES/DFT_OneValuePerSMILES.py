@@ -33,6 +33,9 @@ The ouputs:
 #4. DFT_info_(property)_(index_xy)_(x_name)_(y_name):
     Information (total amount of compounds & outliers & fitted compounds, linear regression line formula)
 """
+import cProfile, pstats
+pr = cProfile.Profile()
+pr.enable()
 import numpy as np
 import argparse
 from scipy import stats, polyval, polyfit
@@ -41,8 +44,7 @@ matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import csv
 import os
-import time
-start = time.time()
+
 ### the HelpFormatter and provide a special intro for the options that should be handled "raw"
 ### Any other calls to .add_argument() where the help does not start with R| will be wrapped as normal.
 class SmartFormatter(argparse.HelpFormatter):
@@ -817,7 +819,9 @@ str12 = "%s/%s" %(name_directory,lr_plot_remained)
 plt.savefig(str12)
 
 #####
-end1 = time.time()
-record_time("Part1",start,end1,start)
-#####
+pr.disable()
 
+f = open('x.prof', 'a')
+sortby = 'cumulative'
+pstats.Stats(pr, stream=f).strip_dirs().sort_stats(sortby).print_stats()
+f.close()
