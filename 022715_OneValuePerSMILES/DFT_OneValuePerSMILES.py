@@ -542,8 +542,8 @@ for i1,i2 in array1:
     num3 = i2 - i1
     list_dis.append(round(num3,5))
     
-
-list_2 = zip(list_y,list_dis)
+list_2 = zip(y2,list_dis)  ## ((y2-y1)/y2)*100%
+#list_2 = zip(list_y,list_dis)   ## ((y2-y1)/y1)*100%
 array2 = np.asarray(list_2)
 
 list_percentage = []
