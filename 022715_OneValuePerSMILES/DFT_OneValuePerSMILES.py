@@ -13,7 +13,8 @@ the remaining work I will leave for the program(DFTdata_cal_1223.py) I have
 done before to finish them.
  
 
-The inputs:
+The inputs: arguments
+This script will read the files below.
 DFT_(property)_(index)_(flavorName).csv 
 SMILES,amount of this SMILES, max, min, median, mean, MAD, SD, CV
 
