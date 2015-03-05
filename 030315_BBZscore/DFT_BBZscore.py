@@ -126,6 +126,11 @@ str_f6_2 = "HFs"
 str_f7_2 = "BP86t"
 str_f8_2 = "B3LYPt"
 str_f9_2 = "PBE0t"
+list_fname_1 = ["BP86/SVP","B3LYP/SVP","PBE0/SVP","BH&HLYP/SVP","M06-2X/SVP","HF/SVP",
+                "BP86/TZVP","B3LYP/TZVP","PBE0/TZVP"]
+list_fname_2 = ["BP86s","B3LYPs","PBE0s","BH&HLYPs","M06s","HFs",
+                "BP86t","B3LYPt","PBE0t"]
+
 """
 1 = BP86/SVP    2 = B3LYP/SVP  3 = PBE0/SVP 4 = BH&HLYP/SVP 5 = M06-2X/SVP
 6 = HF/SVP      7 = BP86/TZVP   8 = B3LYP/TZVP 9 = PBE0/TZVP
@@ -233,7 +238,7 @@ def sortZ(list_z):
         list_z.append(i[1])
     list_5 = [list_index, list_z]
     return list_5
-def Z_plot(list_z):
+def Z_plot(list_z,y,x_flavorname):
     list_1 = sortZ(list_z)
     print list_1
     import matplotlib
@@ -244,10 +249,24 @@ def Z_plot(list_z):
     width = 0.8
     plt.bar(ind,list_1[1],width)
     plt.xticks(ind+width/2.0, list_1[0],rotation=75 )
-    plt.title("Z-score Histogram")
+    plt.yticks(np.arange(-100,101,10))
+    plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
     plt.xlabel("Building blocks")
     plt.ylabel("Z-score")
-    plt.show()
+#    plt.show()
+    str_1 = str_property + "_Zscore_%d%d_sorted.png"%(args.x_flavor,y+1)
+    plt.savefig(str_1)
+    plt.close()
+    ########################plot unsorted plot#################
+    plt.bar(ind,list_z,width,color="r")
+    plt.xticks(ind+width/2.0, xrange(1,27),rotation=75 )
+    plt.yticks(np.arange(-100,101,10))
+    plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
+    plt.xlabel("Building blocks")
+    plt.ylabel("Z-score")
+#    plt.show()
+    str_2 = str_property + "_Zscore_%d%d.png"%(args.x_flavor,y+1)
+    plt.savefig(str_2)
 ###############
 if args.y_flavor == 999 and args.x_flavor == 1:
     args.y_flavor = [1,2,3,4,5,6,7,8]
@@ -262,6 +281,8 @@ txt_zscore.write("%s   %s %% \n"%(str_property,num_percentage))
 for y in args.y_flavor:
     filename_x = list_textname[args.x_flavor-1]
     filename_y = list_textname[y]
+    y_flavorname = list_fname_1[y]
+    x_flavorname = list_fname_1[args.x_flavor-1]
     dic_all = dic_SMILES_x_y(filename_x,filename_y)
     list_x = []
     list_y = []
@@ -278,7 +299,7 @@ for y in args.y_flavor:
     list_zscore = get_zscore(list_sumBB_outliers,list_sumBB_fitted)
     txt_zscore.write("%s vs %d\n"%(args.x_flavor,y+1))
     txt_zscore.write(str(list_zscore))
-    Z_plot(list_zscore)
+    Z_plot(list_zscore,y,x_flavorname)
     break
     
 txt_zscore.close()    
