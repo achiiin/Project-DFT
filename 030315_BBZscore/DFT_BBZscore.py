@@ -21,6 +21,7 @@ import argparse
 import time
 start = time.time()
 import csv
+import numpy as np
 ### the HelpFormatter and provide a special intro for the options that should be handled "raw"
 ### Any other calls to .add_argument() where the help does not start with R| will be wrapped as normal.
 class SmartFormatter(argparse.HelpFormatter):
@@ -221,10 +222,28 @@ def get_zscore(outlierList,fittedList):
             num_z = 100.0
         list_zscore[i] = round(num_z,2)
     return list_zscore
-    
+def sortZ(list_z):
+    list_1 = zip(range(1,27),list_z)
+    from operator import itemgetter
+    list_4 = sorted(list_1, key= itemgetter(1))
+    list_index = []
+    list_z = []
+    for i in list_4:
+        list_index.append(str(i[0]))
+        list_z.append(i[1])
+    list_5 = [list_index, list_z]
+    return list_5
 def Z_plot(list_z):
+    list_1 = sortZ(list_z)
+    print list_1
+    import matplotlib
     import matplotlib.pyplot as plt
-    plt.bar(range(1,27),list_zscore)
+    matplotlib.use('Agg')
+    N = 26
+    ind = np.arange(N)
+    width = 0.8
+    plt.bar(ind,list_1[1],width)
+    plt.xticks(ind+width/2.0, list_1[0],rotation=75 )
     plt.title("Z-score Histogram")
     plt.xlabel("Building blocks")
     plt.ylabel("Z-score")
