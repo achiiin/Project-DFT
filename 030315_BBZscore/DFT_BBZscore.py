@@ -22,6 +22,8 @@ import time
 start = time.time()
 import csv
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 ### the HelpFormatter and provide a special intro for the options that should be handled "raw"
 ### Any other calls to .add_argument() where the help does not start with R| will be wrapped as normal.
 class SmartFormatter(argparse.HelpFormatter):
@@ -82,7 +84,7 @@ def record_time(part,start,timenow,timelast):
 #    str1 = str(part)
     str2 = str(timenow - timelast)
     str3 = str(timenow - start)
-    str6 = "%s/time_record.txt" %(name_directory)
+    str6 = "time_record.txt"
     txt = open(str6, 'a')
     txt.write(part),txt.write("    "),txt.write(str2),txt.write("    "),
     txt.write(str3),txt.write("\n") 
@@ -240,10 +242,7 @@ def sortZ(list_z):
     return list_5
 def Z_plot(list_z,y,x_flavorname):
     list_1 = sortZ(list_z)
-    print list_1
-    import matplotlib
     import matplotlib.pyplot as plt
-    matplotlib.use('Agg')
     N = 26
     ind = np.arange(N)
     width = 0.8
@@ -267,6 +266,7 @@ def Z_plot(list_z,y,x_flavorname):
 #    plt.show()
     str_2 = str_property + "_Zscore_%d%d.png"%(args.x_flavor,y+1)
     plt.savefig(str_2)
+    plt.close()
 ###############
 if args.y_flavor == 999 and args.x_flavor == 1:
     args.y_flavor = [1,2,3,4,5,6,7,8]
@@ -314,36 +314,10 @@ txt_zscore.close()
 #    value_expected_k = value_n * value_upperK / value_N
 #    value_sigma = math.sqrt(value_n*value_upperK*(value_N-value_upperK)/value_N/value_N*(value_N-value_n)/(value_N-1))
 #    num_z = (value_k - value_expected_k) / value_sigma
-    
-
-
-
-    
-
-###############################################################################
-
-                 
-                 
-                 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                
+  
                  
 #####
-#end1 = time.time()
-#record_time("Part1",start,end1,start)
+end1 = time.time()
+record_time("Part1",start,end1,start)
 #####
 
