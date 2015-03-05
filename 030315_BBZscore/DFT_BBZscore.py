@@ -13,6 +13,7 @@ SMILES,amount of this SMILES, max, min, median, mean, MAD, SD, CV
 
  
 """ 
+# remember to remove  "break"
 filename_CountBB = "BB_test.csv"
 str_property = "HOMO"
 
@@ -248,7 +249,7 @@ def Z_plot(list_z,y,x_flavorname):
     width = 0.8
     plt.bar(ind,list_1[1],width)
     plt.xticks(ind+width/2.0, list_1[0],rotation=75 )
-    plt.yticks(np.arange(-100,101,10))
+    plt.yticks(np.arange(-300,301,50))
     plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
     plt.xlabel("Building blocks")
     plt.ylabel("Z-score")
@@ -259,7 +260,7 @@ def Z_plot(list_z,y,x_flavorname):
     ########################plot unsorted plot#################
     plt.bar(ind,list_z,width,color="r")
     plt.xticks(ind+width/2.0, xrange(1,27),rotation=75 )
-    plt.yticks(np.arange(-100,101,10))
+    plt.yticks(np.arange(-300,301,50))
     plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
     plt.xlabel("Building blocks")
     plt.ylabel("Z-score")
@@ -297,7 +298,7 @@ for y in args.y_flavor:
     value_n = float(len(list_outliers_SMILES))
     value_N = float(len(list_SMILES))
     list_zscore = get_zscore(list_sumBB_outliers,list_sumBB_fitted)
-    txt_zscore.write("%s vs %d\n"%(args.x_flavor,y+1))
+    txt_zscore.write("\n%s vs %d\n"%(args.x_flavor,y+1))
     txt_zscore.write(str(list_zscore))
     Z_plot(list_zscore,y,x_flavorname)
     break
