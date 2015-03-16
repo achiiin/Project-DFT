@@ -276,7 +276,7 @@ elif args.y_flavor == 999 and args.x_flavor == 2:
 else:
     args.y_flavor = [args.y_flavor]
 txt_zscore = open('result_Zscore.txt', 'a')
-txt_zscore.write("%s   %s %% \n"%(str_property,num_percentage))
+txt_zscore.write("\n%s   %s %% \n"%(str_property,num_percentage))
 
 
 for y in args.y_flavor:
