@@ -15,6 +15,7 @@ SMILES,amount of this SMILES, max, min, median, mean, MAD, SD, CV
 """ 
 # remember to remove  "break"
 filename_CountBB = "BB_test.csv"
+#filename_CountBB = "Unit_BBs/countBB_exact.csv"
 str_property = "HOMO"
 
 
@@ -25,6 +26,7 @@ import csv
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
+import copy
 ### the HelpFormatter and provide a special intro for the options that should be handled "raw"
 ### Any other calls to .add_argument() where the help does not start with R| will be wrapped as normal.
 class SmartFormatter(argparse.HelpFormatter):
@@ -230,8 +232,32 @@ def get_zscore(outlierList,fittedList):
             num_z = 100.0
         list_zscore[i] = round(num_z,2)
     return list_zscore
+def remove100(list_z):  
+    for index,item in enumerate(list_z):
+        if item[1] == 100.0:
+            del list_z[index]
+    return list_z
+def select00(list_z):
+    list1 = [14, 15, 26, 18, 19, 17, 1, 2, 3, 4, 5, 6, 7]
+    list_2 = copy.deepcopy(list_z)
+    for index,item in enumerate(list_2):
+        if item[0] in list1 == False:
+            del list_2[index]
+    return list_2
+            
+#def remove100_2(list_z):  
+#    for index,item in enumerate(list_z):
+#        if item == 100.0:
+#            del list_z[index]
+#    return list_z
+list_bb = [14, 15, 26, 18, 19, 17, 1, 2, 3, 4, 5, 6, 7]
 def sortZ(list_z):
     list_1 = zip(range(1,27),list_z)
+    print list_1
+    for index,item in enumerate(list_1):
+        if item[0] in list_bb == False:
+            del list_1[index]
+    print list_1
     from operator import itemgetter
     list_4 = sorted(list_1, key= itemgetter(1))
     list_index = []
@@ -243,8 +269,9 @@ def sortZ(list_z):
     return list_5
 def Z_plot(list_z,y,x_flavorname):
     list_1 = sortZ(list_z)
+    print list_1   ########
     import matplotlib.pyplot as plt
-    N = 26
+    N = len(list_1)
     ind = np.arange(N)
     width = 0.8
     plt.bar(ind,list_1[1],width)
@@ -258,16 +285,17 @@ def Z_plot(list_z,y,x_flavorname):
     plt.savefig(str_1)
     plt.close()
     ########################plot unsorted plot#################
-    plt.bar(ind,list_z,width,color="r")
-    plt.xticks(ind+width/2.0, xrange(1,27),rotation=75 )
-    plt.yticks(np.arange(-300,301,50))
-    plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
-    plt.xlabel("Building blocks")
-    plt.ylabel("Z-score")
-#    plt.show()
-    str_2 = str_property + "_Zscore_%d%d.png"%(args.x_flavor,y+1)
-    plt.savefig(str_2)
-    plt.close()
+#    list_z = remove100_2(list_z)
+#    plt.bar(ind,list_z,width,color="r")
+#    plt.xticks(ind+width/2.0, xrange(1,14),rotation=75 )
+#    plt.yticks(np.arange(-300,301,50))
+#    plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
+#    plt.xlabel("Building blocks")
+#    plt.ylabel("Z-score")
+##    plt.show()
+#    str_2 = str_property + "_Zscore_%d%d.png"%(args.x_flavor,y+1)
+#    plt.savefig(str_2)
+#    plt.close()
 ###############
 if args.y_flavor == 999 and args.x_flavor == 1:
     args.y_flavor = [1,2,3,4,5,6,7,8]
