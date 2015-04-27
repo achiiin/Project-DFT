@@ -341,7 +341,7 @@ df_1 = pd.DataFrame({"SMILES": SMILES_list,
                      "F18": list_yesno[6],
                      "F19": list_yesno[7]})
 
-df_1.to_csv("DFT_HOMO_BP86s_1percent_allflavors_1outlier0fitted.csv")
+df_1.to_csv("DFT_HOMO_BP86s_1percent_1outlier0fitted.csv")
                  
 #####
 end1 = time.time()
