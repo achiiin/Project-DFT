@@ -12,11 +12,12 @@ df_outlier <- read.csv('DFT_HOMO_BP86s_1percent_1outlier0fitted.csv')
 
 ## check for missing packages and install them
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("caret", "rattle", "rpart.plot")
+pacman::p_load("caret", "rattle", "rpart.plot","gbm")
 ##
 library(caret)
 library(rattle)
 library(rpart.plot)
+library(gbm)
 
 
 
@@ -65,7 +66,10 @@ print(names(validation))
 # 
 # print(Fit_rf);print(Fit_rf$finalModel)
 
-# ####glm####
+pd_test_rf <- predict(Fit_rf,testing)
+print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
+####glm####
 set.seed(1990)
 Fit_glm <- train(Class~.,data=training,method = 'glm')
 
@@ -83,7 +87,40 @@ print(confusionMatrix(data = pd_train_glm,reference = training$Class)$overall[1]
 # 
 # print(Fit_svm);print(Fit_svm$finalModel)
 
+pd_train_svm <- predict(Fit_svm,training)
+print(confusionMatrix(data = pd_train_svm,reference = training$Class)$table)
+print(confusionMatrix(data = pd_train_svm,reference = training$Class)$overall[1])
 
+pd_test_svm <- predict(Fit_svm,testing)
+print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$overall[1])
+
+
+#### gbm ####
+set.seed(1990)
+Fit_gbm <- train(Class~., method="gbm",data = training)
+print(Fit_gbm);print(Fit_gbm$finalModel)
+
+pd_train_gbm <- predict(Fit_gbm,training)
+print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
+print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
+
+pd_test_gbm <- predict(Fit_gbm,testing)
+print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
+
+#### lda ####
+set.seed(1990)
+Fit_lda <- train(Class~.,data=training,method = 'lda')
+print(Fit_lda);print(Fit_lda$finalModel)
+
+pd_train_lda <- predict(Fit_lda,training)
+print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
+print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
+
+pd_test_gbm <- predict(Fit_lda,testing)
+print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
 
 
 
