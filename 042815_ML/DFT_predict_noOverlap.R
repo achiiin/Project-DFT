@@ -71,8 +71,7 @@ print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
 print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
 ####glm####
 set.seed(1990)
-ctrl <- trainControl(method = "cv",number = 10 )
-Fit_glm <- train(Class~.,data=training,method = 'glm',trControl = ctrl)
+Fit_glm <- train(Class~.,data=training,method = 'glm')
 
 print(Fit_glm);print(Fit_glm$finalModel)
 
@@ -99,8 +98,7 @@ print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$overall[1])
 
 #### gbm ####
 set.seed(1990)
-ctrl <- trainControl(method = "cv",number = 10 )
-Fit_gbm <- train(Class~., method="gbm",data = training,trControl = ctrl)
+Fit_gbm <- train(Class~., method="gbm",data = training)
 print(Fit_gbm);print(Fit_gbm$finalModel)
 
 pd_train_gbm <- predict(Fit_gbm,training)
@@ -113,8 +111,7 @@ print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
 
 #### lda ####
 set.seed(1990)
-ctrl <- trainControl(method = "cv",number = 10 )
-Fit_lda <- train(Class~.,data=training,method = 'lda',trControl = ctrl)
+Fit_lda <- train(Class~.,data=training,method = 'lda')
 print(Fit_lda);print(Fit_lda$finalModel)
 
 pd_train_lda <- predict(Fit_lda,training)
