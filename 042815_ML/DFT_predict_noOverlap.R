@@ -7,7 +7,7 @@
 select_flavors <- "F18"
 # df_bb <- read.csv('BB_test_2.csv')
 # df_outlier <- read.csv('DFT_HOMO_BP86s_1percent_1outlier0fitted.csv')
-df_bb <- read.csv('countBB_0427_noOverlap.csv')
+df_bb <- read.csv('countBB_noOverlap.csv')
 df_outlier <- read.csv('DFT_HOMO_BP86s_1percent_1outlier0fitted_F18.csv')
 
 ## check for missing packages and install them
@@ -79,36 +79,39 @@ print(names(validation))
 # pd_train_glm <- predict(Fit_glm,training)
 # print(confusionMatrix(data = pd_train_glm,reference = training$Class)$table)
 # print(confusionMatrix(data = pd_train_glm,reference = training$Class)$overall[1])
-
+# 
+# pd_test_glm <- predict(Fit_glm,testing)
+# print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$overall[1])
 ####SVM####
-set.seed(1990)
-# ctrl <- trainControl(method = "repeatedcv", number = 10, 
-#                      repeats = 5,savePred=T, classProb= T)
-# Fit_svm <- train(Class~.,data=training, method = "svmLinear", trControl = ctrl)
-Fit_svm <- svm(Class~.,data=training)
-print(Fit_svm);print(Fit_svm$finalModel)
-
-pd_train_svm <- predict(Fit_svm,training)
-print(confusionMatrix(data = pd_train_svm,reference = training$Class)$table)
-print(confusionMatrix(data = pd_train_svm,reference = training$Class)$overall[1])
-
-pd_test_svm <- predict(Fit_svm,testing)
-print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$overall[1])
+# set.seed(1990)
+# # ctrl <- trainControl(method = "repeatedcv", number = 10, 
+# #                      repeats = 5,savePred=T, classProb= T)
+# # Fit_svm <- train(Class~.,data=training, method = "svmLinear", trControl = ctrl)
+# Fit_svm <- svm(Class~.,data=training)
+# print(Fit_svm);print(Fit_svm$finalModel)
+# 
+# pd_train_svm <- predict(Fit_svm,training)
+# print(confusionMatrix(data = pd_train_svm,reference = training$Class)$table)
+# print(confusionMatrix(data = pd_train_svm,reference = training$Class)$overall[1])
+# 
+# pd_test_svm <- predict(Fit_svm,testing)
+# print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$overall[1])
 
 
 #### gbm ####
-# set.seed(1990)
-# Fit_gbm <- train(Class~., method="gbm",data = training)
-# print(Fit_gbm);print(Fit_gbm$finalModel)
-# 
-# pd_train_gbm <- predict(Fit_gbm,training)
-# print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
-# print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
-# 
-# pd_test_gbm <- predict(Fit_gbm,testing)
-# print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
-# print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
+set.seed(1990)
+Fit_gbm <- train(Class~., method="gbm",data = training)
+print(Fit_gbm);print(Fit_gbm$finalModel)
+
+pd_train_gbm <- predict(Fit_gbm,training)
+print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
+print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
+
+pd_test_gbm <- predict(Fit_gbm,testing)
+print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
 
 #### lda ####
 # set.seed(1990)
@@ -119,7 +122,7 @@ print(confusionMatrix(data = pd_test_svm,reference = testing$Class)$overall[1])
 # print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
 # print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
 # 
-# pd_test_gbm <- predict(Fit_lda,testing)
+# pd_test_lda <- predict(Fit_lda,testing)
 # print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
 # print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
 
