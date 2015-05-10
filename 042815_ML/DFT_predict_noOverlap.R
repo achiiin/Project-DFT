@@ -21,17 +21,19 @@ library(gbm)
 library(e1071)
 
 #####Test#####
-df_bb$id  <- 1:nrow(df_bb)
+# df_bb$id  <- 1:nrow(df_bb)
 out  <- merge(df_bb,df_outlier, by = "SMILES")
-df_3 <- out[order(out$id), ]
-# list_2 <- df_3$F18 == df_outlier$F18
-# if(! FALSE %in% list_2){
-#     print("Correct!")
-# }else{stop("Wrong!!")}
-df_bb <- df_bb[ , -which(names(df_bb) %in% c("id"))]
-df_bb <- data.frame(df_bb,Class = as.factor(df_3[,select_flavors]))
+df_bb <- out[order(out$X), ]
+list_2 <- df_bb$F18 == df_outlier$F18
+if(! FALSE %in% list_2){
+    print("Correct!")
+}else{stop("Wrong!!")}
 print(names(df_bb))
 
+df_bb <- data.frame(df_bb,Class = as.factor(df_bb[,select_flavors]))
+print(names(df_bb))
+df_bb <- df_bb[ , -which(names(df_bb) %in% c("X",select_flavors))]
+print(names(df_bb))
 #############
 
 
