@@ -20,13 +20,26 @@ library(rpart.plot)
 library(gbm)
 library(e1071)
 
+#####Test#####
+df_bb$id  <- 1:nrow(df_bb)
+out  <- merge(df_bb,df_outlier, by = "SMILES")
+df_3 <- out[order(out$id), ]
+# list_2 <- df_3$F18 == df_outlier$F18
+# if(! FALSE %in% list_2){
+#     print("Correct!")
+# }else{stop("Wrong!!")}
+df_bb <- df_bb[ , -which(names(df_bb) %in% c("id"))]
+df_bb <- data.frame(df_bb,Class = as.factor(df_3[,select_flavors]))
+print(names(df_bb))
+
+#############
 
 
-list_1 <- df_bb$SMILES == df_outlier$SMILES
-
-if(! FALSE %in% list_1){
-    df_bb <- data.frame(df_bb,Class = as.factor(df_outlier[,select_flavors]))
-}else{stop("Two files have different SMILES!")}
+# list_1 <- df_bb$SMILES == df_outlier$SMILES
+# 
+# if(! FALSE %in% list_1){
+#     df_bb <- data.frame(df_bb,Class = as.factor(df_outlier[,select_flavors]))
+# }else{stop("Two files have different SMILES!")}
 
 #####################################################
 #### data preparation ####
@@ -101,17 +114,17 @@ print(names(validation))
 
 
 #### gbm ####
-set.seed(1990)
-Fit_gbm <- train(Class~., method="gbm",data = training)
-print(Fit_gbm);print(Fit_gbm$finalModel)
-
-pd_train_gbm <- predict(Fit_gbm,training)
-print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
-print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
-
-pd_test_gbm <- predict(Fit_gbm,testing)
-print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
+# set.seed(1990)
+# Fit_gbm <- train(Class~., method="gbm",data = training)
+# print(Fit_gbm);print(Fit_gbm$finalModel)
+# 
+# pd_train_gbm <- predict(Fit_gbm,training)
+# print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
+# print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
+# 
+# pd_test_gbm <- predict(Fit_gbm,testing)
+# print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
 
 #### lda ####
 # set.seed(1990)
@@ -125,6 +138,5 @@ print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
 # pd_test_lda <- predict(Fit_lda,testing)
 # print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
 # print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
-
 
 
