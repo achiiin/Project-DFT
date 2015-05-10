@@ -66,7 +66,9 @@ validation = testing_1[-inTest,]
 # pd_train_glm <- predict(Fit_glm,training)
 # print(confusionMatrix(data = pd_train_glm,reference = training$Class)$table)
 # print(confusionMatrix(data = pd_train_glm,reference = training$Class)$overall[1])
-
+# pd_test_glm <- predict(Fit_glm,testing)
+# print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$overall[1])
 ####SVM####
 set.seed(1990)
 # ctrl <- trainControl(method = "repeatedcv", number = 10, 
