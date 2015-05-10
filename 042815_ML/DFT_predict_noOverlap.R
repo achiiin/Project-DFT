@@ -20,7 +20,7 @@ library(rpart.plot)
 library(gbm)
 library(e1071)
 
-#####Test#####
+#####Sorting#####
 # df_bb$id  <- 1:nrow(df_bb)
 out  <- merge(df_bb,df_outlier, by = "SMILES")
 df_bb <- out[order(out$X), ]
@@ -129,16 +129,16 @@ print(names(validation))
 # print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
 
 #### lda ####
-# set.seed(1990)
-# Fit_lda <- train(Class~.,data=training,method = 'lda')
-# print(Fit_lda);print(Fit_lda$finalModel)
-# 
-# pd_train_lda <- predict(Fit_lda,training)
-# print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
-# print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
-# 
-# pd_test_lda <- predict(Fit_lda,testing)
-# print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
-# print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
+set.seed(1990)
+Fit_lda <- train(Class~.,data=training,method = 'lda')
+print(Fit_lda);print(Fit_lda$finalModel)
+
+pd_train_lda <- predict(Fit_lda,training)
+print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
+print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
+
+pd_test_lda <- predict(Fit_lda,testing)
+print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
 
 
