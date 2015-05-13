@@ -1,0 +1,77 @@
+---
+title: "DFT ML-Model Report\n (HOMO_18_BP86/SVP~B3LYP/TZVP- 1% outlier)"
+author: "Ching-Yen"
+date: "Monday, May 11, 2015"
+output: html_document
+---
+```{r,echo=FALSE,results='hide', message=FALSE, warning=TRUE}
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(knitr)
+opts_chunk$set(out.width='1000px', dpi=200)
+```
+```{r}
+df_1 <- read.csv("DFT_MLresultdata.csv")
+print(df_1)
+```
+* FeatureClass
+    + all: Predictors: 26 (the numbers of each BB) 
+    + NoOveralp:Predictors: 13 (the number of BB without overlap) 
+    + Predictors: 26 (the existence* of each BB)
+* algorithm
+    + rf: Random Forest
+    + glm: Generalized linear model
+    + gbm: Gradient Boosting Machine
+    + lda: Linear Discriminant Analysis
+* acc.train: Accuracy of training set
+* acc.test: Accuracy of testing set
+* Specificity.test: Specificity = P(0|fitted)     
+ Sensitivity.test: Sensitivity = P(1|outlier)      
+ ( 1 = predicted outlier, 0 = predicted fitted)     
+
+
+## Accuracy of testing set over all algorithm
+```{r}
+qplot(FeatureClass,acc.test,data=df_1,color=algorithm,size=1)+ylim(0.8,1)
+```
+
+## Sensitivity(P(1|outlier)) and Specificity(P(0|fitted)) in Testing set
+```{r}
+g1 <- ggplot(df_1, aes(x = FeatureClass, y = Sensitivity.test))+ylim(0.5,1)+
+      geom_point(aes(color = algorithm))+ 
+      theme(axis.text.x=element_text(angle = 45, hjust = 1))
+g2 <- ggplot(df_1, aes(x = FeatureClass, y = Specificity.test))+ylim(0.5,1)+
+      geom_point(aes(color = algorithm))+
+      theme(axis.text.x=element_text(angle = 45, hjust = 1))
+grid.arrange(g1, g2, ncol = 2)
+```
+
+## Discussion
+
+1. The boundary between outilers and fitted group is arbitrary.
+   * Definition: 1% outlier: (Residual/Observed) * 100% >= 1% 
+   * 1% outlier plot (HOMO_18_BP86s_B3LYP)
+   ![alt text](plots/lr_HOMO_18_BP86s_B3LYPt_outlier_100.png)
+
+2. The values in dataset are the median values of each SMILES group.
+   * Coefficient of variation in HOMO     
+     (1 = BP86/SVP    2 = B3LYP/SVP  3 = PBE0/SVP 4 = BH&HLYP/SVP 5 = M06-2X/SVP 
+      6 = HF/SVP      7 = BP86/TZVP   8 = B3LYP/TZVP 9 = PBE0/TZVP )
+   
+|                   | 1         | 2         | 3         | 4         | 5         | 6         | 7         | 8         | 9         |
+|-------------------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| Total # (plural)* | 2,286,633 | 2,286,602 | 2,286,598 | 2,286,575 | 2,286,562 | 2,286,547 | 1,768,848 | 1,122,301 | 1,100,442 |
+| # (CV > 0.01)     | 61,451    | 93,838    | 87,355    | 119,513   | 93,844    | 169,565   | 26,616    | 18,290    | 17,161    |
+| Percentage        | 2.7%      | 4.1%      | 3.8%      | 5.2%      | 4.1%      | 7.4%      | 1.5%      | 1.6%      | 1.6%      |
+    
+    * Mean Absolute Deviation plot 
+    HOMO_1_BP86s
+    ![alt text](plots/DFT_HOMO_1_BP86s.png)
+    HOMO_8_B3LYPt
+    ![alt text](plots/DFT_HOMO_8_B3LYPt.png)
+
+3. 
+```{r, echo=FALSE}
+
+```
