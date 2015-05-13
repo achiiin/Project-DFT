@@ -57,7 +57,14 @@ grid.arrange(g1, g2, ncol = 2)
 2. The values in dataset are the median values of each SMILES group.
    * Coefficient of variation in HOMO     
      (1 = BP86/SVP    2 = B3LYP/SVP  3 = PBE0/SVP 4 = BH&HLYP/SVP 5 = M06-2X/SVP 
-      6 = HF/SVP      7 = BP86/TZVP   8 = B3LYP/TZVP 9 = PBE0/TZVP )           
+      6 = HF/SVP      7 = BP86/TZVP   8 = B3LYP/TZVP 9 = PBE0/TZVP )        
+      
+|  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|:-----------------:|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| Total # (plural)* | 2,286,633 | 2,286,602 | 2,286,598 | 2,286,575 | 2,286,562 | 2,286,547 | 1,768,848 | 1,122,301 | 1,100,442 |
+| # (CV > 0.01) | 61,451 | 93,838 | 87,355 | 119,513 | 93,844 | 169,565 | 26,616 | 18,290 | 17,161 |
+| Percentage | 2.7% | 4.1% | 3.8% | 5.2% | 4.1% | 7.4% | 1.5% | 1.6% | 1.6% |
+
    * Mean Absolute Deviation plot        
      * HOMO_1_BP86s                  
      ![alt text](plots/DFT_HOMO_1_BP86s.png)                 
