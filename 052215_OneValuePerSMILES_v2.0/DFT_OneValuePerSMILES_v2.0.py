@@ -96,8 +96,8 @@ parser.add_argument("-lr2","--lr_line2",action='store_false',default=True,
 parser.add_argument("-lr3","--lr_line3",action='store_false',default=True,
                     help="Hide the LinearReg line for remaining pool.")
                    
-args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
-#args = parser.parse_args()
+#args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
+args = parser.parse_args()
 ###############################Function #######################################
 def record_time(part,start,timenow,timelast):
 #    str1 = str(part)
@@ -159,7 +159,7 @@ f = open(filename_x)
 csv_f = csv.reader(f)
 next(csv_f)
 for row in csv_f:
-  dic_SMILES_x_y.setdefault(row[0],[]).append(row[4])
+  dic_SMILES_x_y.setdefault(row[0],[]).append(row[3])  ### use minimum value in each SMILES group 
 f.close()
 
 ###read y file
@@ -167,7 +167,7 @@ f = open(filename_y)
 csv_f = csv.reader(f)
 next(csv_f)
 for row in csv_f:
-  dic_SMILES_x_y.setdefault(row[0],[]).append(row[4])
+  dic_SMILES_x_y.setdefault(row[0],[]).append(row[3])  ### use minimum value in each SMILES group 
 f.close()
 
 ###############################################################################
