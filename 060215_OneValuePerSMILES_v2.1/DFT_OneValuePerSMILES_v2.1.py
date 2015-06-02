@@ -69,8 +69,8 @@ parser.add_argument("property", type=int, choices=[1,2,3,4],
                     help="R|choose the options of property:\n"
                     "1 = HOMO  2 = LUMO  3 = Dipole  4 = Gap")
 #parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
-                    "enter the percentage of data taken out to be outliers\n"
-                    "input only number part")
+#                    "enter the percentage of data taken out to be outliers\n"
+#                    "input only number part")
 parser.add_argument("error_outlier", type=float, help="R|define the outlier\n"
                     "enter the error of data taken out to be outliers\n")
 parser.add_argument("-x", "--x_flavor", type=int, 
@@ -518,17 +518,17 @@ elif  args.y_flavor == 9:
 
 
 ID_SMILE_X_Y_dis = "DFT_%s_%s%s_%s_%s.csv"% (pro_name, x_num,y_num, x_name, y_name)
-num5 = str(int(args.error_outlier))
-lr_text_outlier = "DFT_%s_%s%s_%s_%s_outlier_%s.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
-lr_text_fitted = "DFT_%s_%s%s_%s_%s_fitted_%s.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
-name_directory = "DFT_%s_%s_%s%s_%s_%s"% (pro_name,num5,x_num,y_num, x_name, y_name)
+num5 = str(args.error_outlier)
+lr_text_outlier = "DFT_%s_%s%s_%s_%s_outlier_%seV.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
+lr_text_fitted = "DFT_%s_%s%s_%s_%s_fitted_%seV.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
+name_directory = "DFT_%s_%seV_%s%s_%s_%s"% (pro_name,num5,x_num,y_num, x_name, y_name)
 os.makedirs(name_directory)
 invalid_compound = "DFT_invalid_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
 outbound_compound = "DFT_outbound_%s_%s%s_%s_%s"% (pro_name, x_num,y_num, x_name, y_name)
 info_name = "DFT_info_%s_%s%s_%s_%s.txt"% (pro_name, x_num,y_num, x_name, y_name)
 lr_plot = "lr_%s_%s%s_%s_%s.png" % (pro_name,x_num,y_num,x_name, y_name)
-lr_plot_outlier = "lr_%s_%s%s_%s_%s_outlier_%s.png" % (pro_name,x_num,y_num,x_name, y_name, num5)
-lr_plot_remained = "lr_%s_%s%s_%s_%s_fitted_%s.png" % (pro_name, x_num,y_num,x_name, y_name, num5)
+lr_plot_outlier = "lr_%s_%s%s_%s_%s_outlier_%seV.png" % (pro_name,x_num,y_num,x_name, y_name, num5)
+lr_plot_remained = "lr_%s_%s%s_%s_%s_fitted_%seV.png" % (pro_name, x_num,y_num,x_name, y_name, num5)
 num_percentage = str(args.error_outlier)
 ##############################################################################
 
