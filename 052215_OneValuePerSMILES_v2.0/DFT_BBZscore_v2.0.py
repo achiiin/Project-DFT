@@ -5,6 +5,7 @@ Created on Tue Mar 03 15:57:41 2015
 """
 """
 This script is to get the Z-Score for each building block of SMILES of outliers.
+## The percentage is adjustable.##
 
 <input> argument: percentage of outliers
 
@@ -301,7 +302,7 @@ for y in args.y_flavor:
     txt_zscore.write("\n%s vs %d\n"%(args.x_flavor,y+1))
     txt_zscore.write(str(list_zscore))
     Z_plot(list_zscore,y,x_flavorname)
-    break
+#    break
     
 txt_zscore.close()    
 #outlierList = list_sumBB_outliers
