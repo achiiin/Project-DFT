@@ -17,7 +17,7 @@ print(df_1)
 ```
 * FeatureClass
     + all: Predictors: 26 (the numbers of each BB) 
-    + NoOveralp:Predictors: 13 (the number of BB without overlap) 
+    + NoOverlap:Predictors: 13 (the number of BB without overlap) 
     + Predictors: 26 (the existence* of each BB)
 * algorithm
     + rf: Random Forest
