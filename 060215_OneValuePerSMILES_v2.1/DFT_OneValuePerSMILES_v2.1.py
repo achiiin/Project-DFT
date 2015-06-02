@@ -4,6 +4,7 @@ Created on Fri Feb 27 15:15:28 2015
 """
 #==============================================================================
 # v2.0 : use minimum value instead of median
+# v2.1 : Outliers are determined by Residual(= |y2-y1|)
 #==============================================================================
 """
 After the ananlyse of Coefficient of Variance(CV) for each SMILES group of 
@@ -11,7 +12,7 @@ each property, I found that the variation of values in each SMILES group of HOMO
 small. Thus, I would like to try to use the minimum value of each SMILES group to 
 represent the entire group.
 
-Basically, I will just write a few new lines to import the median values and
+Basically, I will just write a few new lines to import the minimum values and
 the remaining work I will leave for the program(DFTdata_cal_1223.py) I have 
 done before to finish them.
  
@@ -67,9 +68,11 @@ parser = argparse.ArgumentParser(description="Do Linear Regression to the data",
 parser.add_argument("property", type=int, choices=[1,2,3,4],
                     help="R|choose the options of property:\n"
                     "1 = HOMO  2 = LUMO  3 = Dipole  4 = Gap")
-parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
+#parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
                     "enter the percentage of data taken out to be outliers\n"
                     "input only number part")
+parser.add_argument("error_outlier", type=float, help="R|define the outlier\n"
+                    "enter the error of data taken out to be outliers\n")
 parser.add_argument("-x", "--x_flavor", type=int, 
                     choices=[1,2], help="R|choose the flavor for x-axis:\n"
                     "1 = BP86/SVP    2 = B3LYP/SVP")
@@ -96,8 +99,8 @@ parser.add_argument("-lr2","--lr_line2",action='store_false',default=True,
 parser.add_argument("-lr3","--lr_line3",action='store_false',default=True,
                     help="Hide the LinearReg line for remaining pool.")
                    
-#args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
-args = parser.parse_args()
+args = parser.parse_args('1 0.1 -x 1 -y 6 -lr2 -lr3'.split())
+#args = parser.parse_args()
 ###############################Function #######################################
 def record_time(part,start,timenow,timelast):
 #    str1 = str(part)
@@ -515,7 +518,7 @@ elif  args.y_flavor == 9:
 
 
 ID_SMILE_X_Y_dis = "DFT_%s_%s%s_%s_%s.csv"% (pro_name, x_num,y_num, x_name, y_name)
-num5 = str(int(args.percent_outlier * 100))
+num5 = str(int(args.error_outlier))
 lr_text_outlier = "DFT_%s_%s%s_%s_%s_outlier_%s.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
 lr_text_fitted = "DFT_%s_%s%s_%s_%s_fitted_%s.csv" % (pro_name, x_num,y_num, x_name, y_name, num5)
 name_directory = "DFT_%s_%s_%s%s_%s_%s"% (pro_name,num5,x_num,y_num, x_name, y_name)
@@ -526,7 +529,7 @@ info_name = "DFT_info_%s_%s%s_%s_%s.txt"% (pro_name, x_num,y_num, x_name, y_name
 lr_plot = "lr_%s_%s%s_%s_%s.png" % (pro_name,x_num,y_num,x_name, y_name)
 lr_plot_outlier = "lr_%s_%s%s_%s_%s_outlier_%s.png" % (pro_name,x_num,y_num,x_name, y_name, num5)
 lr_plot_remained = "lr_%s_%s%s_%s_%s_fitted_%s.png" % (pro_name, x_num,y_num,x_name, y_name, num5)
-num_percentage = str(args.percent_outlier)
+num_percentage = str(args.error_outlier)
 ##############################################################################
 
   
@@ -587,13 +590,13 @@ list_outliersSMILES = []
 list_fittedSMILES = []
 
 for i,line in enumerate(list_percentage):
-    if line >= args.percent_outlier:
+    if line >= args.error_outlier:
         count_num = count_num + 1
         item_1 = [i+1] + list_3[i]
         list_4.append(item_1) 
         x_outliers.append(x1_2[i])
         y_outliers.append(y1_2[i])
-    if line < args.percent_outlier:
+    if line < args.error_outlier:
         item_2 = [i+1] + list_3[i]
         list_5.append(item_2)
         x_fitted.append(x1_2[i])
