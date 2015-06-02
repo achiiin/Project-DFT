@@ -220,7 +220,7 @@ def write_outlier(m,b,r_squared,property,x,y,percentage):
     str10 = "%s/projectionvalues.txt" %(name_directory)
     txt = open(str10, 'a')
     txt.write(property),txt.write("_"),txt.write(x),txt.write("_"),
-    txt.write(y),txt.write("_outlier_"),txt.write(percentage),txt.write("%"),
+    txt.write(y),txt.write("_outlier_"),txt.write(percentage),
     txt.write("      "),txt.write(mm),txt.write("     "),
     txt.write(bb),txt.write("     "),txt.write(rr),txt.write("\n")
     txt.close()
@@ -232,7 +232,7 @@ def write_remained(m,b,r_squared,property,x,y,percentage):
     str10 = "%s/projectionvalues.txt" %(name_directory)
     txt = open(str10, 'a')
     txt.write(property),txt.write("_"),txt.write(x),txt.write("_"),
-    txt.write(y),txt.write("_fitted_"),txt.write(percentage),txt.write("%"),
+    txt.write(y),txt.write("_fitted_"),txt.write(percentage),
     txt.write("     "),txt.write(mm),txt.write("     "),
     txt.write(bb),txt.write("     "),txt.write(rr),txt.write("\n")
     txt.close()
@@ -589,14 +589,14 @@ y_fitted = []
 list_outliersSMILES = []
 list_fittedSMILES = []
 
-for i,line in enumerate(list_percentage):
-    if line >= args.error_outlier:
+for i,line in enumerate(list_dis):
+    if abs(line)*27.21139570 > args.error_outlier:
         count_num = count_num + 1
         item_1 = [i+1] + list_3[i]
         list_4.append(item_1) 
         x_outliers.append(x1_2[i])
         y_outliers.append(y1_2[i])
-    if line < args.error_outlier:
+    if abs(line)*27.21139570 <= args.error_outlier:
         item_2 = [i+1] + list_3[i]
         list_5.append(item_2)
         x_fitted.append(x1_2[i])
@@ -821,110 +821,110 @@ ax.grid(True)
 
 str12 = "%s/%s" %(name_directory,lr_plot_remained)
 plt.savefig(str12)
-################### Counting Atoms ############################################
-
-###########outliers SMILES :
-list_Si = []
-list_se = []
-list_s = []
-list_n = []
-list_o = []
-list_Sise = []
-num_Si = 0
-num_se = 0
-num_s = 0
-num_n = 0
-num_o = 0
-num_Sise = 0
-####### Below is variables storing the number of SMILES containing particular atoms#####
-num_Si_2 = 0
-num_se_2 = 0
-num_s_2 = 0
-num_n_2 = 0
-num_o_2 = 0
-num_Sise_2 = 0
-##################################################
-f = open(str5)
-csv_f = csv.reader(f)
-for row in csv_f:
-    num_Si = num_Si + row[1].count('Si')
-    num_se = num_se + row[1].count('se')
-    num_s = num_s + (row[1].count('s') - row[1].count('se'))
-    num_n = num_n + row[1].count('n')
-    num_o = num_o + row[1].count('o')
-    if row[1].count('Si') > 0 and row[1].count('se') >0:
-        num_Sise = num_Sise + min(row[1].count('Si'),row[1].count('se'))
-        num_Sise_2 += 1
-  ########### the number of SMILES containing particular atoms #####
-    if row[1].count('Si') > 0 :
-        num_Si_2 += 1
-    if row[1].count('se') > 0 :
-        num_se_2 += 1
-    if (row[1].count('s') - row[1].count('se')) > 0 :
-        num_s_2 += 1    
-    if row[1].count('n') > 0 :
-        num_n_2 += 1
-    if row[1].count('o') > 0 :
-        num_o_2 += 1      
-
-f.close()
-txt_info = open('%s/CountingAtoms_result.txt'%name_directory, 'a')
-txt_info.write(str5),txt_info.write('\n   <Outliers>\n')
-txt_info.write('Summation,Si,Se,S,N,O,Sise\n')
-txt_info.write('   <Number of particular atoms>\nSummation,%d,%d,%d,%d,%d,%d' %(num_Si,num_se,num_s,num_n,num_o,num_Sise))
-txt_info.write('\n   <Number of SMILES containing particular atoms>\n')
-txt_info.write('Summation,%d,%d,%d,%d,%d,%d' %(num_Si_2,num_se_2,num_s_2,num_n_2,num_o_2,num_Sise_2))
-txt_info.write('\n')
-txt_info.close()
-
-####################fitted SMILES :  
-num_Si = 0
-num_se = 0
-num_s = 0
-num_n = 0
-num_o = 0
-num_Sise = 0
-####### Below is variables storing the number of SMILES containing particular atoms#####
-num_Si_2 = 0
-num_se_2 = 0
-num_s_2 = 0
-num_n_2 = 0
-num_o_2 = 0
-num_Sise_2 = 0
-##################################################
-f = open(str6)
-csv_f = csv.reader(f)
-for row in csv_f:
-    num_Si = num_Si + row[1].count('Si')
-    num_se = num_se + row[1].count('se')
-    num_s = num_s + (row[1].count('s') - row[1].count('se'))
-    num_n = num_n + row[1].count('n')
-    num_o = num_o + row[1].count('o')
-    if row[1].count('Si') > 0 and row[1].count('se') >0:
-        num_Sise = num_Sise + min(row[1].count('Si'),row[1].count('se'))
-        num_Sise_2 += 1
-  ########### the number of SMILES containing particular atoms #####
-    if row[1].count('Si') > 0 :
-        num_Si_2 += 1
-    if row[1].count('se') > 0 :
-        num_se_2 += 1
-    if (row[1].count('s') - row[1].count('se')) > 0 :
-        num_s_2 += 1    
-    if row[1].count('n') > 0 :
-        num_n_2 += 1
-    if row[1].count('o') > 0 :
-        num_o_2 += 1 
-
-f.close()
-txt_info = open('%s/CountingAtoms_result.txt'%name_directory, 'a')
-txt_info.write(str6),txt_info.write('\n   <fitted>\n')
-txt_info.write('Summation,Si,Se,S,N,O,Sise\n')
-txt_info.write('   <Number of particular atoms>\nSummation,%d,%d,%d,%d,%d,%d' %(num_Si,num_se,num_s,num_n,num_o,num_Sise))
-txt_info.write('\n   <Number of SMILES containing particular atoms>\n')
-txt_info.write('Summation,%d,%d,%d,%d,%d,%d' %(num_Si_2,num_se_2,num_s_2,num_n_2,num_o_2,num_Sise_2))
-txt_info.write('\n')
-txt_info.close()
-
+#################### Counting Atoms ############################################
+#
+############outliers SMILES :
+#list_Si = []
+#list_se = []
+#list_s = []
+#list_n = []
+#list_o = []
+#list_Sise = []
+#num_Si = 0
+#num_se = 0
+#num_s = 0
+#num_n = 0
+#num_o = 0
+#num_Sise = 0
+######## Below is variables storing the number of SMILES containing particular atoms#####
+#num_Si_2 = 0
+#num_se_2 = 0
+#num_s_2 = 0
+#num_n_2 = 0
+#num_o_2 = 0
+#num_Sise_2 = 0
+###################################################
+#f = open(str5)
+#csv_f = csv.reader(f)
+#for row in csv_f:
+#    num_Si = num_Si + row[1].count('Si')
+#    num_se = num_se + row[1].count('se')
+#    num_s = num_s + (row[1].count('s') - row[1].count('se'))
+#    num_n = num_n + row[1].count('n')
+#    num_o = num_o + row[1].count('o')
+#    if row[1].count('Si') > 0 and row[1].count('se') >0:
+#        num_Sise = num_Sise + min(row[1].count('Si'),row[1].count('se'))
+#        num_Sise_2 += 1
+#  ########### the number of SMILES containing particular atoms #####
+#    if row[1].count('Si') > 0 :
+#        num_Si_2 += 1
+#    if row[1].count('se') > 0 :
+#        num_se_2 += 1
+#    if (row[1].count('s') - row[1].count('se')) > 0 :
+#        num_s_2 += 1    
+#    if row[1].count('n') > 0 :
+#        num_n_2 += 1
+#    if row[1].count('o') > 0 :
+#        num_o_2 += 1      
+#
+#f.close()
+#txt_info = open('%s/CountingAtoms_result.txt'%name_directory, 'a')
+#txt_info.write(str5),txt_info.write('\n   <Outliers>\n')
+#txt_info.write('Summation,Si,Se,S,N,O,Sise\n')
+#txt_info.write('   <Number of particular atoms>\nSummation,%d,%d,%d,%d,%d,%d' %(num_Si,num_se,num_s,num_n,num_o,num_Sise))
+#txt_info.write('\n   <Number of SMILES containing particular atoms>\n')
+#txt_info.write('Summation,%d,%d,%d,%d,%d,%d' %(num_Si_2,num_se_2,num_s_2,num_n_2,num_o_2,num_Sise_2))
+#txt_info.write('\n')
+#txt_info.close()
+#
+#####################fitted SMILES :  
+#num_Si = 0
+#num_se = 0
+#num_s = 0
+#num_n = 0
+#num_o = 0
+#num_Sise = 0
+######## Below is variables storing the number of SMILES containing particular atoms#####
+#num_Si_2 = 0
+#num_se_2 = 0
+#num_s_2 = 0
+#num_n_2 = 0
+#num_o_2 = 0
+#num_Sise_2 = 0
+###################################################
+#f = open(str6)
+#csv_f = csv.reader(f)
+#for row in csv_f:
+#    num_Si = num_Si + row[1].count('Si')
+#    num_se = num_se + row[1].count('se')
+#    num_s = num_s + (row[1].count('s') - row[1].count('se'))
+#    num_n = num_n + row[1].count('n')
+#    num_o = num_o + row[1].count('o')
+#    if row[1].count('Si') > 0 and row[1].count('se') >0:
+#        num_Sise = num_Sise + min(row[1].count('Si'),row[1].count('se'))
+#        num_Sise_2 += 1
+#  ########### the number of SMILES containing particular atoms #####
+#    if row[1].count('Si') > 0 :
+#        num_Si_2 += 1
+#    if row[1].count('se') > 0 :
+#        num_se_2 += 1
+#    if (row[1].count('s') - row[1].count('se')) > 0 :
+#        num_s_2 += 1    
+#    if row[1].count('n') > 0 :
+#        num_n_2 += 1
+#    if row[1].count('o') > 0 :
+#        num_o_2 += 1 
+#
+#f.close()
+#txt_info = open('%s/CountingAtoms_result.txt'%name_directory, 'a')
+#txt_info.write(str6),txt_info.write('\n   <fitted>\n')
+#txt_info.write('Summation,Si,Se,S,N,O,Sise\n')
+#txt_info.write('   <Number of particular atoms>\nSummation,%d,%d,%d,%d,%d,%d' %(num_Si,num_se,num_s,num_n,num_o,num_Sise))
+#txt_info.write('\n   <Number of SMILES containing particular atoms>\n')
+#txt_info.write('Summation,%d,%d,%d,%d,%d,%d' %(num_Si_2,num_se_2,num_s_2,num_n_2,num_o_2,num_Sise_2))
+#txt_info.write('\n')
+#txt_info.close()
+#
 
 
 #####
