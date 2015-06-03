@@ -50,9 +50,11 @@ parser = argparse.ArgumentParser(description="Do Linear Regression to the data",
 #parser.add_argument("property", type=int, choices=[1,2,3,4],
 #                    help="R|choose the options of property:\n"
 #                    "1 = HOMO  2 = LUMO  3 = Dipole  4 = Gap")
-parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
-                    "enter the percentage of data taken out to be outliers\n"
-                    "input only number part")
+#parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
+#                    "enter the percentage of data taken out to be outliers\n"
+#                    "input only number part")
+parser.add_argument("error_outlier", type=float, help="R|define the outlier\n"
+                    "enter the error of data taken out to be outliers\n")
 parser.add_argument("-x", "--x_flavor", type=int, default = 1,
                     choices=[1,2], help="R|choose the flavor for x-axis:\n"
                     "1 = BP86/SVP    2 = B3LYP/SVP")
@@ -80,7 +82,7 @@ parser.add_argument("-y", "--y_flavor", type=int, default = 999,
 #                    help="Hide the LinearReg line for remaining pool.")
 #                   
 #args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
-args = parser.parse_args('1'.split())
+args = parser.parse_args('0.1'.split())
 #args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
 #args = parser.parse_args()
 
@@ -115,7 +117,7 @@ dict_BB = readDict(filename_CountBB)
 #    str_property = "Dipole"
 #if args.property == 4: #eGap
 #    str_property = "eGap"
-num_percentage = str(args.percent_outlier)
+num_percentage = str(args.error_outlier)
 str_f1 = "BP86/SVP"
 str_f2 = "B3LYP/SVP"
 str_f3 = "PBE0/SVP"
@@ -207,10 +209,10 @@ def outliers(x,y):
     for i_y1, i_dis in array2:
         num4 = abs(i_dis/i_y1) * 100
         list_percentage.append(round(num4,2))   
-    for i,line in enumerate(list_percentage):
-        if line >= args.percent_outlier:
+    for i,line in enumerate(list_dis):
+        if abs(line)*27.21139570 > args.error_outlier:
             list_outliers_SMILES.append(list_SMILES[i])
-        if line < args.percent_outlier:
+        if abs(line)*27.21139570 <= args.error_outlier:
             list_fitted_SMILES.append(list_SMILES[i])
             
 def sum_BB(list_SMILES):
@@ -255,7 +257,7 @@ def Z_plot(list_z,y,x_flavorname):
     plt.bar(ind,list_1[1],width)
     plt.xticks(ind+width/2.0, list_1[0],rotation=75 )
     plt.yticks(np.arange(-300,301,50))
-    plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
+    plt.title("%seV %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
     plt.xlabel("Building blocks")
     plt.ylabel("Z-score")
 #    plt.show()
@@ -266,7 +268,7 @@ def Z_plot(list_z,y,x_flavorname):
     plt.bar(ind,list_z,width,color="r")
     plt.xticks(ind+width/2.0, xrange(1,27),rotation=75 )
     plt.yticks(np.arange(-300,301,50))
-    plt.title("%s%% %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
+    plt.title("%seV %s   %s vs. %d"%(num_percentage,str_property,x_flavorname,y+1))
     plt.xlabel("Building blocks")
     plt.ylabel("Z-score")
 #    plt.show()
@@ -281,7 +283,7 @@ elif args.y_flavor == 999 and args.x_flavor == 2:
 else:
     args.y_flavor = [args.y_flavor]
 txt_zscore = open('result_Zscore.txt', 'a')
-txt_zscore.write("\n%s   %s %% \n"%(str_property,num_percentage))
+txt_zscore.write("\n%s   %s eV \n"%(str_property,num_percentage))
 
 
 for y in args.y_flavor:
@@ -306,7 +308,7 @@ for y in args.y_flavor:
     txt_zscore.write("\n%s vs %d\n"%(args.x_flavor,y+1))
     txt_zscore.write(str(list_zscore))
     Z_plot(list_zscore,y,x_flavorname)
-#    break
+    break
     
 txt_zscore.close()    
 #outlierList = list_sumBB_outliers
