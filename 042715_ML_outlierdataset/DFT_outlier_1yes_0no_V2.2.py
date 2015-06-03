@@ -215,12 +215,18 @@ def outliers(x,y):
 #            list_fitted_SMILES.append(list_SMILES[i])
 #            list_yesno.append(0)
     for i,line in enumerate(list_dis):
-        if abs(line)*27.21139570 > args.error_outlier:
-            list_outliers_SMILES.append(list_SMILES[i])
-            list_yesno.append(1)
-        if abs(line)*27.21139570 <= args.error_outlier:
-            list_fitted_SMILES.append(list_SMILES[i])
-            list_yesno.append(0)
+        if abs(line)*27.21139570 <= 0.02:
+            list_yesno.append("a")
+        elif 0.02 < abs(line)*27.21139570 <= 0.04:
+            list_yesno.append("b")
+        elif 0.04 < abs(line)*27.21139570 <= 0.06:
+            list_yesno.append("c")
+        elif 0.06 < abs(line)*27.21139570 <= 0.1:
+            list_yesno.append("d")
+        elif 0.1 < abs(line)*27.21139570 <= 0.15:
+            list_yesno.append("e")
+        elif 0.15 < abs(line)*27.21139570 :
+            list_yesno.append("f")
 #def sum_BB(list_SMILES):
 #    list_sum = [0] *26
 #    for i in list_SMILES:
@@ -320,7 +326,7 @@ for y in args.y_flavor:
     record_time("Part1_18_0_v2.0",start,end0,start)
     df_1 = pd.DataFrame({"SMILES": list_SMILES,
                          "F18": list_yesno})
-    df_1.to_csv("DFT_HOMO_BP86s_0.1eV_1outlier0fitted_F18_V2.0.csv")
+    df_1.to_csv("DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V2.2.csv")
 #    for SMILES in SMILES_list:
 #        if SMILES in list_outliers_SMILES:
 #            list_0_1_NA.append(1)
