@@ -5,7 +5,7 @@ Created on Tue Mar 03 15:57:41 2015
 """
 """
 V2.0 : only have 0 and 1 compounds, no NA.
-
+v2.1 : Add outlier classification (residual determined)
 This script is to make a file recording which SMILES are outliers in each combination.
 1 stands for Outliers. 0 stands for fitted group.
 <input> argument: percentage of outliers
@@ -47,9 +47,11 @@ parser = argparse.ArgumentParser(description="Do Linear Regression to the data",
 #parser.add_argument("property", type=int, choices=[1,2,3,4],
 #                    help="R|choose the options of property:\n"
 #                    "1 = HOMO  2 = LUMO  3 = Dipole  4 = Gap")
-parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
-                    "enter the percentage of data taken out to be outliers\n"
-                    "input only number part")
+#parser.add_argument("percent_outlier", type=float, help="R|define the outlier\n"
+#                    "enter the percentage of data taken out to be outliers\n"
+#                    "input only number part")
+parser.add_argument("error_outlier", type=float, help="R|define the outlier\n"
+                    "enter the error of data taken out to be outliers\n")
 parser.add_argument("-x", "--x_flavor", type=int, default = 1,
                     choices=[1,2], help="R|choose the flavor for x-axis:\n"
                     "1 = BP86/SVP    2 = B3LYP/SVP")
@@ -77,7 +79,7 @@ parser.add_argument("-y", "--y_flavor", type=int, default = 999,
 #                    help="Hide the LinearReg line for remaining pool.")
 #                   
 #args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
-args = parser.parse_args('1'.split())
+args = parser.parse_args('0.1'.split())
 #args = parser.parse_args('1 1 -x 1 -y 6 -lr2 -lr3'.split())
 #args = parser.parse_args()
 
@@ -203,14 +205,20 @@ def outliers(x,y):
     for i_y1, i_dis in array2:
         num4 = abs(i_dis/i_y1) * 100
         list_percentage.append(round(num4,2))   
-    for i,line in enumerate(list_percentage):
-        if line >= args.percent_outlier:
+#    for i,line in enumerate(list_percentage):
+#        if line >= args.percent_outlier:
+#            list_outliers_SMILES.append(list_SMILES[i])
+#            list_yesno.append(1)
+#        if line < args.percent_outlier:
+#            list_fitted_SMILES.append(list_SMILES[i])
+#            list_yesno.append(0)
+    for i,line in enumerate(list_dis):
+        if abs(line)*27.21139570 > args.error_outlier:
             list_outliers_SMILES.append(list_SMILES[i])
             list_yesno.append(1)
-        if line < args.percent_outlier:
+        if abs(line)*27.21139570 <= args.error_outlier:
             list_fitted_SMILES.append(list_SMILES[i])
             list_yesno.append(0)
-            
 #def sum_BB(list_SMILES):
 #    list_sum = [0] *26
 #    for i in list_SMILES:
@@ -310,7 +318,7 @@ for y in args.y_flavor:
     record_time("Part1_18_0_v2.0",start,end0,start)
     df_1 = pd.DataFrame({"SMILES": list_SMILES,
                          "F18": list_yesno})
-    df_1.to_csv("DFT_HOMO_BP86s_1percent_1outlier0fitted_F18_V2.0.csv")
+    df_1.to_csv("DFT_HOMO_BP86s_0.1eV_1outlier0fitted_F18_V2.0.csv")
 #    for SMILES in SMILES_list:
 #        if SMILES in list_outliers_SMILES:
 #            list_0_1_NA.append(1)
