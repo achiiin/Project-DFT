@@ -318,7 +318,7 @@ for y in args.y_flavor:
 #            list_0_1_NA.append(0)
 #        else:
 #            list_0_1_NA.append("NA")
-    list_yesno.append(list_0_1_NA)
+#    list_yesno.append(list_0_1_NA)
 #    list_sumBB_outliers = sum_BB(list_outliers_SMILES)
 #    list_sumBB_fitted = sum_BB(list_fitted_SMILES)
     
