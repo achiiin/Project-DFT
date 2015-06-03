@@ -114,7 +114,7 @@ def readDict(fn):
 #    str_property = "Dipole"
 #if args.property == 4: #eGap
 #    str_property = "eGap"
-num_percentage = str(args.percent_outlier)
+num_percentage = str(args.error_outlier)
 str_f1 = "BP86/SVP"
 str_f2 = "B3LYP/SVP"
 str_f3 = "PBE0/SVP"
