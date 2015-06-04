@@ -234,13 +234,10 @@ def get_zscore(outlierList,fittedList):
 list_bbindex = [14, 15, 26, 18, 19, 17, 1, 2, 3, 4, 5, 6, 7]
 def sortZ(list_z):
     list_1 = zip(range(1,27),list_z)
-    print list_1 
-    print list_1[0][0] in list_bbindex
     list_6 = []
     for index,item in enumerate(list_1):
         if item[0] in list_bbindex:
             list_6.append(item)
-    print list_6
     from operator import itemgetter
     list_4 = sorted(list_6, key= itemgetter(1))
     list_index = []
@@ -253,7 +250,6 @@ def sortZ(list_z):
 def Z_plot(list_z,y,x_flavorname):
     list_1 = sortZ(list_z)
     import matplotlib.pyplot as plt
-    print len(list_1[0])
     N = len(list_1[0])
     ind = np.arange(N)
     width = 0.8
