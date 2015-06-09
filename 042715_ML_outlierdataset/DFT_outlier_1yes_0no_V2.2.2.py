@@ -7,6 +7,7 @@ Created on Tue Mar 03 15:57:41 2015
 V2.0 : only have 0 and 1 compounds, no NA.
 v2.1 : Add outlier classification (residual determined)
 v2.2 : Add muti-classification
+      v2.2.2: two classes- A < 0.01eV  B > 0.15eV
 
 This script is to make a file recording which SMILES are outliers in each combination.
 1 stands for Outliers. 0 stands for fitted group.
@@ -215,18 +216,12 @@ def outliers(x,y):
 #            list_fitted_SMILES.append(list_SMILES[i])
 #            list_yesno.append(0)
     for i,line in enumerate(list_dis):
-        if abs(line)*27.21139570 <= 0.02:
-            list_yesno.append("a")
-        elif 0.02 < abs(line)*27.21139570 <= 0.04:
-            list_yesno.append("b")
-        elif 0.04 < abs(line)*27.21139570 <= 0.06:
-            list_yesno.append("c")
-        elif 0.06 < abs(line)*27.21139570 <= 0.1:
-            list_yesno.append("d")
-        elif 0.1 < abs(line)*27.21139570 <= 0.15:
-            list_yesno.append("e")
+        if abs(line)*27.21139570 <= 0.01:
+            list_yesno.append("A")
+        elif 0.01 < abs(line)*27.21139570 <= 0.15:
+            list_yesno.append("NA")
         elif 0.15 < abs(line)*27.21139570 :
-            list_yesno.append("f")
+            list_yesno.append("B")
 #def sum_BB(list_SMILES):
 #    list_sum = [0] *26
 #    for i in list_SMILES:
@@ -326,7 +321,7 @@ for y in args.y_flavor:
     record_time("Part1_18_0_v2.0",start,end0,start)
     df_1 = pd.DataFrame({"SMILES": list_SMILES,
                          "F18": list_yesno})
-    df_1.to_csv("DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V2.2.csv")
+    df_1.to_csv("DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V2.2.2.csv")
 #    for SMILES in SMILES_list:
 #        if SMILES in list_outliers_SMILES:
 #            list_0_1_NA.append(1)
