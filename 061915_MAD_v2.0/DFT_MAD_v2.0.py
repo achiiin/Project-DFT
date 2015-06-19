@@ -65,8 +65,8 @@ parser.add_argument("infile", type=str, help="input the name of data file")
 parser.add_argument("property", type=int, choices=[1,2,3,4],
                     help="R|choose the options of property:\n"
                     "1 = HOMO  2 = LUMO  3 = Dipole  4 = eGap")
-#args = parser.parse_args('dft_vs_dft_ehomo_dump_test.dat 1'.split())
-args = parser.parse_args('dft_vs_dft_elumo_dump_test.dat 2'.split())
+args = parser.parse_args('dft_vs_dft_ehomo_dump_test.dat 1'.split())
+#args = parser.parse_args('dft_vs_dft_elumo_dump_test.dat 2'.split())
 #args = parser.parse_args('dft_vs_dft_dipmom_dump_test.dat 3'.split())
 #args = parser.parse_args('dft_vs_dft_egap_dump_test.dat 4'.split())
 #args = parser.parse_args('testlr.dat 1'.split())
@@ -377,7 +377,8 @@ for i in range(0,9):
     arr_MAD = np.array(num_1,float) 
     # the histogram of the data
     
-    n, bins, patches = plt.hist(arr_MAD,bins=num_bins, normed=False, facecolor='green', alpha=0.5)
+    n, bins, patches = plt.hist(arr_MAD,bins=num_bins, normed=False, 
+                                range=(0,num_xlim),facecolor='green', alpha=0.5)
      
     if args.property == 3: #Dipole                        
         plt.xlabel('Mean Absolute Deviation(MAD) [D]')
