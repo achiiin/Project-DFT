@@ -306,7 +306,7 @@ if args.property == 2: #LUMO
 if args.property == 3: #Dipole
     str_property = "Dipole"
     num_xlim = 2.0
-    num_bins = 200
+    num_bins = 40
 if args.property == 4: #eGap
     str_property = "eGap"
     num_xlim = 0.4
