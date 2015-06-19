@@ -2,6 +2,14 @@
 Created on Tue Jan 06 15:45:12 2015
 @author: Ching-Yen
 """
+SCRIPT_NAME = "DF_MAD"
+SCRIPT_VERSION = "v2.0"
+REVISION_DATE = "2015-06-19"
+AUTHOR = "(chingyen@buffalo.edu)"
+DESCRIPTION = "MAD"
+
+# Version history timeline:
+# v2.0: change the plot scale
 """
   This script is designed to get <Average, Mean Absolute Deviation(MAD), Max, Min> 
 of each flavor of four properties.
@@ -268,6 +276,8 @@ for i in range(0,9):
 ###########################  Plot  ##########################################
 
 import matplotlib.pyplot as plt
+"""
+## Below is the scale before v2.0
 if args.property == 1: #HOMO
     str_property = "HOMO"
     num_xlim = 1.0
@@ -284,6 +294,23 @@ if args.property == 4: #eGap
     str_property = "eGap"
     num_xlim = 1.0
     num_bins = 100
+"""
+if args.property == 1: #HOMO
+    str_property = "HOMO"
+    num_xlim = 0.4
+    num_bins = 40
+if args.property == 2: #LUMO
+    str_property = "LUMO"
+    num_xlim = 0.4
+    num_bins = 40
+if args.property == 3: #Dipole
+    str_property = "Dipole"
+    num_xlim = 2.0
+    num_bins = 200
+if args.property == 4: #eGap
+    str_property = "eGap"
+    num_xlim = 0.4
+    num_bins = 40
 
 list_str_fx = [str_f1,str_f2,str_f3,str_f4,str_f5,
                str_f6,str_f7,str_f8,str_f9]
