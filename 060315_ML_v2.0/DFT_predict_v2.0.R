@@ -47,6 +47,7 @@ set.seed(1990)
 bad <- is.na(df_bb$Class)
 df_bb <- df_bb[!bad,]
 print(dim(df_bb))
+print(summary(df_bb$Class))
 inTrain = createDataPartition(df_bb$Class, p = 3/5)[[1]]
 training = df_bb[ inTrain,-c(1)]
 testing_1 = df_bb[-inTrain,-c(1)]
@@ -58,31 +59,31 @@ testing = testing_1[inTest,]
 validation = testing_1[-inTest,]
 
 ####Random Forest####
-set.seed(1990)
-fitControl <- trainControl(method = "none")
-tgrid <- expand.grid(mtry=c(6)) 
-Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
-                method = 'rf',ntree = 500)
-
-print(Fit_rf);print(Fit_rf$finalModel)
-
-pd_test_rf <- predict(Fit_rf,testing)
-print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
+# set.seed(1990)
+# fitControl <- trainControl(method = "none")
+# tgrid <- expand.grid(mtry=c(6)) 
+# Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
+#                 method = 'rf',ntree = 500)
+# 
+# print(Fit_rf);print(Fit_rf$finalModel)
+# 
+# pd_test_rf <- predict(Fit_rf,testing)
+# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
 ####glm####
-set.seed(1990)
-Fit_glm <- train(Class~.,data=training,method = 'glm')
-
-print(Fit_glm);print(Fit_glm$finalModel)
-
-pd_train_glm <- predict(Fit_glm,training)
-print(confusionMatrix(data = pd_train_glm,reference = training$Class)$table)
-print(confusionMatrix(data = pd_train_glm,reference = training$Class)$overall[1])
-
-pd_test_glm <- predict(Fit_glm,testing)
-print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$overall[1])
-####SVM####
+# set.seed(1990)
+# Fit_glm <- train(Class~.,data=training,method = 'glm')
+# 
+# print(Fit_glm);print(Fit_glm$finalModel)
+# 
+# pd_train_glm <- predict(Fit_glm,training)
+# print(confusionMatrix(data = pd_train_glm,reference = training$Class)$table)
+# print(confusionMatrix(data = pd_train_glm,reference = training$Class)$overall[1])
+# 
+# pd_test_glm <- predict(Fit_glm,testing)
+# print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$overall[1])
+# ####SVM####
 # set.seed(1990)
 # # ctrl <- trainControl(method = "repeatedcv", number = 10, 
 # #                      repeats = 5,savePred=T, classProb= T)
@@ -100,17 +101,17 @@ print(confusionMatrix(data = pd_test_glm,reference = testing$Class)$overall[1])
 
 
 #### gbm ####
-set.seed(1990)
-Fit_gbm <- train(Class~., method="gbm",data = training)
-print(Fit_gbm);print(Fit_gbm$finalModel)
-
-pd_train_gbm <- predict(Fit_gbm,training)
-print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
-print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
-
-pd_test_gbm <- predict(Fit_gbm,testing)
-print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
+# set.seed(1990)
+# Fit_gbm <- train(Class~., method="gbm",data = training)
+# print(Fit_gbm);print(Fit_gbm$finalModel)
+# 
+# pd_train_gbm <- predict(Fit_gbm,training)
+# print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$table)
+# print(confusionMatrix(data = pd_train_gbm,reference = training$Class)$overall[1])
+# 
+# pd_test_gbm <- predict(Fit_gbm,testing)
+# print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_gbm,reference = testing$Class)$overall[1])
 
 
 #### lda ####
