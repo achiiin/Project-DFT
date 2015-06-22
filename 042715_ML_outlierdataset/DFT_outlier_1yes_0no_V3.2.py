@@ -7,7 +7,7 @@ Created on Tue Mar 03 15:57:41 2015
 V2.0 : only have 0 and 1 compounds, no NA.
 v2.1 : Add outlier classification (residual determined)
 v2.2 : Add muti-classification
-
+v3.2 : use minimum value instead of median
 This script is to make a file recording which SMILES are outliers in each combination.
 1 stands for Outliers. 0 stands for fitted group.
 <input> argument: percentage of outliers
@@ -168,13 +168,13 @@ def dic_SMILES_x_y(xfilename,yfilename):
     csv_f = csv.reader(f)
     next(csv_f)
     for row in csv_f:
-      dic_SMILES_x_y.setdefault(row[0],[]).append(row[4])
+      dic_SMILES_x_y.setdefault(row[0],[]).append(row[3])#use minimum value instead of median
     f.close()
     f = open(yfilename)
     csv_f = csv.reader(f)
     next(csv_f)
     for row in csv_f:
-        dic_SMILES_x_y.setdefault(row[0],[]).append(row[4])
+        dic_SMILES_x_y.setdefault(row[0],[]).append(row[3])#use minimum value instead of median
     return dic_SMILES_x_y
 
 def distrubute_xy(dic):
@@ -326,7 +326,7 @@ for y in args.y_flavor:
     record_time("Part1_18_0_v2.0",start,end0,start)
     df_1 = pd.DataFrame({"SMILES": list_SMILES,
                          "F18": list_yesno})
-    df_1.to_csv("DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V2.2.csv")
+    df_1.to_csv("DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv")
 #    for SMILES in SMILES_list:
 #        if SMILES in list_outliers_SMILES:
 #            list_0_1_NA.append(1)
