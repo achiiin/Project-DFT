@@ -1,7 +1,10 @@
 
 """
-Created on Tue Mar 03 15:57:41 2015
-@author: Ching-Yen
+SCRIPT_NAME = "DFT_BBZscore_random_v1.0"
+SCRIPT_VERSION = "v1.0"
+REVISION_DATE = "2015-06-24"
+AUTHOR = "(chingyen@buffalo.edu)"
+DESCRIPTION = "make z-score for random samples"
 """
 #==============================================================================
 # v2.0 : use minimum value instead of median
@@ -31,6 +34,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import random
+random.seed(1990)
 ### the HelpFormatter and provide a special intro for the options that should be handled "raw"
 ### Any other calls to .add_argument() where the help does not start with R| will be wrapped as normal.
 class SmartFormatter(argparse.HelpFormatter):
