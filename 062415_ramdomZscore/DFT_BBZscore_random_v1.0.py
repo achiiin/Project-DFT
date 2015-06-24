@@ -191,38 +191,34 @@ def distrubute_xy(dic):
             list_y.append(float(value[1]))
         else:
             pass
-def outliers(x,y):
-    from scipy import stats
-    import numpy as np
-    slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    y2 = []   
-    for i in list_x:
-        num7 = slope * i + intercept
-        y2.append(round(num7,5))
-    list_1 = zip(list_y,y2)
-    array1 = np.asarray(list_1)
-    
-    list_dis = []
-    for i1,i2 in array1:
-        num3 = i2 - i1
-        list_dis.append(round(num3,5))
-        
-    list_2 = zip(list_y,list_dis)   ## ((y2-y1)/y1)*100%
-    array2 = np.asarray(list_2)
-    
-    list_percentage = []
-    for i_y1, i_dis in array2:
-        num4 = abs(i_dis/i_y1) * 100
-        list_percentage.append(round(num4,2))   
-    for i,line in enumerate(list_dis):
-        if abs(line)*27.21139570 > args.error_outlier:
-            list_outliers_SMILES.append(list_SMILES[i])
-        if abs(line)*27.21139570 <= args.error_outlier:
-            list_fitted_SMILES.append(list_SMILES[i])
-def random_outliers(num_proportion):
-    num3 = int(num_proportion * len(list_SMILES))
-    list_outliers_SMILES = random.sample(list_SMILES,num3)
-    list_fitted_SMILES = list(set(list_SMILES).difference(set(list_outliers_SMILES)))
+#def outliers(x,y):
+#    from scipy import stats
+#    import numpy as np
+#    slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+#    y2 = []   
+#    for i in list_x:
+#        num7 = slope * i + intercept
+#        y2.append(round(num7,5))
+#    list_1 = zip(list_y,y2)
+#    array1 = np.asarray(list_1)
+#    
+#    list_dis = []
+#    for i1,i2 in array1:
+#        num3 = i2 - i1
+#        list_dis.append(round(num3,5))
+#        
+#    list_2 = zip(list_y,list_dis)   ## ((y2-y1)/y1)*100%
+#    array2 = np.asarray(list_2)
+#    
+#    list_percentage = []
+#    for i_y1, i_dis in array2:
+#        num4 = abs(i_dis/i_y1) * 100
+#        list_percentage.append(round(num4,2))   
+#    for i,line in enumerate(list_dis):
+#        if abs(line)*27.21139570 > args.error_outlier:
+#            list_outliers_SMILES.append(list_SMILES[i])
+#        if abs(line)*27.21139570 <= args.error_outlier:
+#            list_fitted_SMILES.append(list_SMILES[i])
 
 def sum_BB(list_SMILES):
     list_sum = [0] *26
@@ -308,7 +304,11 @@ for y in args.y_flavor:
     list_fitted_SMILES = []
     distrubute_xy(dic_all) ## to get list_x and list_y
 #    outliers(list_x,list_y) ## to get list_outliers_SMILES and list_fitted_SMILES
-    random_outliers(0.1)  ## to get random samples (0.1 > 10%)
+    #### random sampling ###
+    num3 = int(0.1 * len(list_SMILES))  ## 0.1 -> 10% 
+    list_outliers_SMILES = random.sample(list_SMILES,num3)
+    list_fitted_SMILES = list(set(list_SMILES).difference(set(list_outliers_SMILES)))
+    ######
     list_sumBB_outliers = sum_BB(list_outliers_SMILES)
     list_sumBB_fitted = sum_BB(list_fitted_SMILES)
     ###### Z-Score #######
