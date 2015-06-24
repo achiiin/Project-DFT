@@ -8,7 +8,7 @@ Created on Tue Mar 03 15:57:41 2015
 # v2.1 : Outliers are determined by Residual(= |y2-y1|)
 #==============================================================================
 """
-This script is to get the Z-Score for each building block of SMILES of outliers.
+This script is to get the Z-Score for each building block of SMILES of "RANDOM SAMPLES".
 ## The percentage is adjustable.##
 
 <input> argument: percentage of outliers
@@ -30,6 +30,7 @@ import csv
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
+import random
 ### the HelpFormatter and provide a special intro for the options that should be handled "raw"
 ### Any other calls to .add_argument() where the help does not start with R| will be wrapped as normal.
 class SmartFormatter(argparse.HelpFormatter):
@@ -214,7 +215,11 @@ def outliers(x,y):
             list_outliers_SMILES.append(list_SMILES[i])
         if abs(line)*27.21139570 <= args.error_outlier:
             list_fitted_SMILES.append(list_SMILES[i])
-            
+def random_outliers(num_proportion):
+    num3 = int(num_proportion * len(list_SMILES))
+    list_outliers_SMILES = random.sample(list_SMILES,num3)
+    list_fitted_SMILES = list(set(list_SMILES).difference(set(list_outliers_SMILES)))
+
 def sum_BB(list_SMILES):
     list_sum = [0] *26
     for i in list_SMILES:
@@ -298,7 +303,8 @@ for y in args.y_flavor:
     list_outliers_SMILES = []
     list_fitted_SMILES = []
     distrubute_xy(dic_all) ## to get list_x and list_y
-    outliers(list_x,list_y) ## to get list_outliers_SMILES and list_fitted_SMILES
+#    outliers(list_x,list_y) ## to get list_outliers_SMILES and list_fitted_SMILES
+    random_outliers(0.1)  ## to get random samples (0.1 > 10%)
     list_sumBB_outliers = sum_BB(list_outliers_SMILES)
     list_sumBB_fitted = sum_BB(list_fitted_SMILES)
     ###### Z-Score #######
