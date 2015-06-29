@@ -5,21 +5,22 @@
 #        2. --- (indicates which SMILES are outliers)
 
 select_flavors <- "F18"
-# df_bb <- read.csv('BB_test_3.csv')
-# df_outlier <- read.csv('BB_test_4.csv')
-df_bb <- read.csv('CountBB_BB_0508.csv')
-df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.2.csv')
+df_bb <- read.csv('BB_test_3.csv')
+df_outlier <- read.csv('BB_test_4.csv')
+# df_bb <- read.csv('CountBB_BB_0508.csv')
+# df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.2.csv')
 
 
 ## check for missing packages and install them
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("caret", "rattle", "rpart.plot","gbm","e1071")
+pacman::p_load("caret", "rattle", "rpart.plot","gbm","e1071","nnet")
 ##
 library(caret)
 library(rattle)
 library(rpart.plot)
 library(gbm)
 library(e1071)
+library(nnet)
 
 
 
@@ -64,21 +65,33 @@ inTrain_80 = createDataPartition(df_bb$Class, p = 4/5)[[1]]
 training_80 = df_bb[ inTrain_80,-c(1)]
 testing_80 = df_bb[-inTrain_80,-c(1)]
 print(names(training_80))
-print(summary(training_80))
+print(summary(training_80$Class))
 #### Neural Networks ####
 set.seed(1990)
+Fit_nnet <- train(Class~., method="nnet", data = training_80,trace = FALSE)
+
+print(Fit_nnet);print(Fit_nnet$finalModel)
+
+pd_train_nnet <- predict(Fit_nnet,training_80)
+print(confusionMatrix(data = pd_train_nnet,reference = training_80$Class)$table)
+print(confusionMatrix(data = pd_train_nnet,reference = training_80$Class)$overall[1])
+
+pd_test_nnet <- predict(Fit_nnet,testing_80)
+
+print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$table)
+print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$overall[1])
 ####Random Forest####
-set.seed(1990)
-fitControl <- trainControl(method = "none")
-tgrid <- expand.grid(mtry=c(6)) 
-Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
-                method = 'rf',ntree = 500)
-
-print(Fit_rf);print(Fit_rf$finalModel)
-
-pd_test_rf <- predict(Fit_rf,testing)
-print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
+# set.seed(1990)
+# fitControl <- trainControl(method = "none")
+# tgrid <- expand.grid(mtry=c(6)) 
+# Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
+#                 method = 'rf',ntree = 500)
+# 
+# print(Fit_rf);print(Fit_rf$finalModel)
+# 
+# pd_test_rf <- predict(Fit_rf,testing)
+# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
 ####glm####
 # set.seed(1990)
 # Fit_glm <- train(Class~.,data=training,method = 'glm')
