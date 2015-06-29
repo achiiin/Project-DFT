@@ -8,7 +8,7 @@ select_flavors <- "F18"
 # df_bb <- read.csv('BB_test_3.csv')
 # df_outlier <- read.csv('BB_test_4.csv')
 df_bb <- read.csv('CountBB_BB_0508.csv')
-df_outlier <- read.csv('DFT_HOMO_BP86s_1percent_1outlier0fitted_F18_V2.0.csv')
+df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.2.csv')
 
 
 ## check for missing packages and install them
@@ -58,18 +58,27 @@ inTest = createDataPartition(testing_1$Class, p = 1/2)[[1]]
 testing = testing_1[inTest,]
 validation = testing_1[-inTest,]
 
+#### create training(80%) & testing(20%) ####
+set.seed(1990)
+inTrain_80 = createDataPartition(df_bb$Class, p = 4/5)[[1]]
+training_80 = df_bb[ inTrain_80,-c(1)]
+testing_80 = df_bb[-inTrain_80,-c(1)]
+print(names(training_80))
+print(summary(training_80))
+#### Neural Networks ####
+set.seed(1990)
 ####Random Forest####
-# set.seed(1990)
-# fitControl <- trainControl(method = "none")
-# tgrid <- expand.grid(mtry=c(6)) 
-# Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
-#                 method = 'rf',ntree = 500)
-# 
-# print(Fit_rf);print(Fit_rf$finalModel)
-# 
-# pd_test_rf <- predict(Fit_rf,testing)
-# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
-# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
+set.seed(1990)
+fitControl <- trainControl(method = "none")
+tgrid <- expand.grid(mtry=c(6)) 
+Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
+                method = 'rf',ntree = 500)
+
+print(Fit_rf);print(Fit_rf$finalModel)
+
+pd_test_rf <- predict(Fit_rf,testing)
+print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
+print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
 ####glm####
 # set.seed(1990)
 # Fit_glm <- train(Class~.,data=training,method = 'glm')
@@ -115,17 +124,17 @@ validation = testing_1[-inTest,]
 
 
 #### lda ####
-set.seed(1990)
-Fit_lda <- train(Class~.,data=training,method = 'lda')
-print(Fit_lda);print(Fit_lda$finalModel)
-
-pd_train_lda <- predict(Fit_lda,training)
-print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
-print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
-
-pd_test_lda <- predict(Fit_lda,testing)
-print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
-print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
+# set.seed(1990)
+# Fit_lda <- train(Class~.,data=training,method = 'lda')
+# print(Fit_lda);print(Fit_lda$finalModel)
+# 
+# pd_train_lda <- predict(Fit_lda,training)
+# print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
+# print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
+# 
+# pd_test_lda <- predict(Fit_lda,testing)
+# print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
+# print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
 
 
 
