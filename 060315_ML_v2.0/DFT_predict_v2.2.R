@@ -8,10 +8,10 @@
 #        only consider class a,d,e,f, regroup a as "0", and d,e,f as "1"
 
 select_flavors <- "F18"
-df_bb <- read.csv('BB_test_3.csv')
-df_outlier <- read.csv('BB_test_4.csv')
-# df_bb <- read.csv('CountBB_BB_0508.csv')
-# df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.2.csv')
+# df_bb <- read.csv('BB_test_3.csv')
+# df_outlier <- read.csv('BB_test_4.csv')
+df_bb <- read.csv('CountBB_BB_0508.csv')
+df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
 
 
 ## check for missing packages and install them
@@ -72,10 +72,12 @@ validation = testing_1[-inTest,]
 
 #### regroup a as "0", and d,e,f as "1" ####
 set.seed(1990)
-df_bb_2 <- subset(df_bb,Class ==c("a","d","e","f"))
+df_bb_2 <- df_bb[df_bb$Class %in% c("a","d","e","f")] 
 print(summary(df_bb_2$Class))
-df_bb_2$Class[df_bb_2$Class == "a"] <- "0"
-df_bb_2$Class[df_bb_2$Class == c("d","e","f")] <- "1"
+
+df_bb_2$Class <- as.character(df_bb_2$Class)
+df_bb_2$Class[df_bb_2$Class %in% "a"] <- "0"
+df_bb_2$Class[df_bb_2$Class %in% c("d","e","f")] <- "1"
 df_bb_2$Class <- as.factor(df_bb_2$Class)
 print(summary(df_bb_2$Class))
 
@@ -104,14 +106,14 @@ print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$overall[
 # set.seed(1990)
 # fitControl <- trainControl(method = "none")
 # tgrid <- expand.grid(mtry=c(6)) 
-# Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training,
+# Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training_80,
 #                 method = 'rf',ntree = 500)
 # 
 # print(Fit_rf);print(Fit_rf$finalModel)
 # 
-# pd_test_rf <- predict(Fit_rf,testing)
-# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$table)
-# print(confusionMatrix(data = pd_test_rf,reference = testing$Class)$overall[1])
+# pd_test_rf <- predict(Fit_rf,testing_80)
+# print(confusionMatrix(data = pd_test_rf,reference = testing_80$Class)$table)
+# print(confusionMatrix(data = pd_test_rf,reference = testing_80$Class)$overall[1])
 ####glm####
 # set.seed(1990)
 # Fit_glm <- train(Class~.,data=training,method = 'glm')
