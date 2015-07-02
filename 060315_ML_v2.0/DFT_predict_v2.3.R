@@ -19,7 +19,7 @@ df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
 
 ## check for missing packages and install them
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("caret", "rattle", "rpart.plot","gbm","e1071","nnet")
+pacman::p_load("caret", "rattle", "rpart.plot","gbm","e1071","nnet","pROC","MASS")
 ##
 library(caret)
 library(rattle)
@@ -27,7 +27,8 @@ library(rpart.plot)
 library(gbm)
 library(e1071)
 library(nnet)
-
+library(pROC)
+library(MASS)
 
 
 # list_1 <- df_bb$SMILES == df_outlier$SMILES
@@ -92,25 +93,25 @@ print(summary(training_80$Class))
 
 
 #### Neural Networks ####
-set.seed(1990)
-Fit_nnet <- train(Class~., method="nnet", data = training_80,trace = FALSE)
-
-print(Fit_nnet);print(Fit_nnet$finalModel)
-
-pd_train_nnet <- predict(Fit_nnet,training_80)
-print(confusionMatrix(data = pd_train_nnet,reference = training_80$Class)$table)
-print(confusionMatrix(data = pd_train_nnet,reference = training_80$Class)$overall[1])
-
-pd_test_nnet <- predict(Fit_nnet,testing_80)
-
-print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$table)
-print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$overall[1])
+# set.seed(1990)
+# Fit_nnet <- train(Class~., method="nnet", data = training_80,trace = FALSE)
+# 
+# print(Fit_nnet);print(Fit_nnet$finalModel)
+# 
+# pd_train_nnet <- predict(Fit_nnet,training_80)
+# print(confusionMatrix(data = pd_train_nnet,reference = training_80$Class)$table)
+# print(confusionMatrix(data = pd_train_nnet,reference = training_80$Class)$overall[1])
+# 
+# pd_test_nnet <- predict(Fit_nnet,testing_80)
+# 
+# print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$table)
+# print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$overall[1])
 ####Random Forest####
 # set.seed(1990)
-# fitControl <- trainControl(method = "none")
+# fitControl <- trainControl(method = "none",classProbs = TRUE,summaryFunction = twoClassSummary)
 # tgrid <- expand.grid(mtry=c(6)) 
 # Fit_rf <- train(Class~., trControl = fitControl, tuneGrid=tgrid,data=training_80,
-#                 method = 'rf',ntree = 500)
+#                 method = 'rf',ntree = 500, metric="ROC")
 # 
 # print(Fit_rf);print(Fit_rf$finalModel)
 # 
@@ -162,17 +163,25 @@ print(confusionMatrix(data = pd_test_nnet,reference = testing_80$Class)$overall[
 
 
 #### lda ####
-# set.seed(1990)
-# Fit_lda <- train(Class~.,data=training,method = 'lda')
-# print(Fit_lda);print(Fit_lda$finalModel)
-# 
-# pd_train_lda <- predict(Fit_lda,training)
-# print(confusionMatrix(data = pd_train_lda,reference = training$Class)$table)
-# print(confusionMatrix(data = pd_train_lda,reference = training$Class)$overall[1])
-# 
-# pd_test_lda <- predict(Fit_lda,testing)
-# print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$table)
-# print(confusionMatrix(data = pd_test_lda,reference = testing$Class)$overall[1])
+set.seed(1990)
+
+ctrl <- trainControl(method = "repeatedcv",
+                     repeats = 3,
+                     classProbs = TRUE,
+                     summaryFunction = twoClassSummary)
+
+Fit_lda <- train(Class~.,data=training_80,method = 'lda',tuneLength=5,
+                 trControl = ctrl, metric="ROC")
+
+print(Fit_lda);print(Fit_lda$finalModel)
+
+pd_train_lda <- predict(Fit_lda,training_80)
+print(confusionMatrix(data = pd_train_lda,reference = training_80$Class)$table)
+print(confusionMatrix(data = pd_train_lda,reference = training_80$Class)$overall[1])
+
+pd_test_lda <- predict(Fit_lda,testing_80)
+print(confusionMatrix(data = pd_test_lda,reference = testing_80$Class)$table)
+print(confusionMatrix(data = pd_test_lda,reference = testing_80$Class)$overall[1])
 
 
 
