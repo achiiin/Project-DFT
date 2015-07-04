@@ -91,10 +91,12 @@ inTrain_80 = createDataPartition(df_bb_2$Class, p = 4/5)[[1]]
 training_80 = df_bb_2[ inTrain_80,-c(1)]
 testing_80 = df_bb_2[-inTrain_80,-c(1)]
 print(names(training_80))
+print(dim(training_80))
 print(summary(training_80$Class))
 
 ##############################################
-
+trainingSet <- training_80
+testingSet <- testing_80
 ## Class frequencies
 table(trainingSet$Class)
 
