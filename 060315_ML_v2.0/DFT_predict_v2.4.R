@@ -13,7 +13,7 @@
 
 select_flavors <- "F18"
 # df_bb <- read.csv('BB_test_3.csv')
-# df_outlier <- read.csv('BB_test_4.csv')
+# df_outlier <- read.csv('BB_test_3_2.csv')
 df_bb <- read.csv('CountBB_BB_0508.csv')
 df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
 
@@ -82,8 +82,8 @@ df_bb_2 <- df_bb[df_bb$Class %in% c("a","d","e","f"),]
 print(summary(df_bb_2$Class))
 
 df_bb_2$Class <- as.character(df_bb_2$Class)
-df_bb_2$Class[df_bb_2$Class %in% "a"] <- "0"
-df_bb_2$Class[df_bb_2$Class %in% c("d","e","f")] <- "1"
+df_bb_2$Class[df_bb_2$Class %in% "a"] <- "fit"
+df_bb_2$Class[df_bb_2$Class %in% c("d","e","f")] <- "Out"
 df_bb_2$Class <- as.factor(df_bb_2$Class)
 print(summary(df_bb_2$Class))
 
@@ -105,7 +105,7 @@ mod0 <- train(Class ~ ., data = trainingSet,
               method = "rf",
               metric = "ROC",
               tuneGrid = data.frame(mtry = 3),
-              ntree = 1000,
+              ntree = 500,
               trControl = trainControl(method = "repeatedcv",
                                        repeats = 5,
                                        classProbs = TRUE,
@@ -229,7 +229,7 @@ mod1 <- train(Class ~ ., data = trainingSet,
               metric = "Dist",
               maximize = FALSE,
               tuneLength = 20,
-              ntree = 1000,
+              ntree = 500,
               trControl = trainControl(method = "repeatedcv",
                                        repeats = 5,
                                        classProbs = TRUE,
