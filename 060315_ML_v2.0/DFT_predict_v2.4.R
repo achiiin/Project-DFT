@@ -58,15 +58,15 @@ bad <- is.na(df_bb$Class)
 df_bb <- df_bb[!bad,]
 print(dim(df_bb))
 print(summary(df_bb$Class))
-inTrain = createDataPartition(df_bb$Class, p = 3/5)[[1]]
-training = df_bb[ inTrain,-c(1)]
-testing_1 = df_bb[-inTrain,-c(1)]
-print(names(training))
-print(names(testing_1))
-set.seed(1990)
-inTest = createDataPartition(testing_1$Class, p = 1/2)[[1]]
-testing = testing_1[inTest,]
-validation = testing_1[-inTest,]
+# inTrain = createDataPartition(df_bb$Class, p = 3/5)[[1]]
+# training = df_bb[ inTrain,-c(1)]
+# testing_1 = df_bb[-inTrain,-c(1)]
+# print(names(training))
+# print(names(testing_1))
+# set.seed(1990)
+# inTest = createDataPartition(testing_1$Class, p = 1/2)[[1]]
+# testing = testing_1[inTest,]
+# validation = testing_1[-inTest,]
 
 #### create training(80%) & testing(20%) ####
 # set.seed(1990)
@@ -87,17 +87,37 @@ df_bb_2$Class[df_bb_2$Class %in% c("d","e","f")] <- "Out"
 df_bb_2$Class <- as.factor(df_bb_2$Class)
 print(summary(df_bb_2$Class))
 
-inTrain_80 = createDataPartition(df_bb_2$Class, p = 4/5)[[1]]
-training_80 = df_bb_2[ inTrain_80,-c(1)]
-testing_80 = df_bb_2[-inTrain_80,-c(1)]
-print(names(training_80))
-print(dim(training_80))
-print(summary(training_80$Class))
+# ### for 80% training & 20% testing ###
+# inTrain_80 = createDataPartition(df_bb_2$Class, p = 4/5)[[1]]
+# training_80 = df_bb_2[ inTrain_80,-c(1)]
+# testing_80 = df_bb_2[-inTrain_80,-c(1)]
+# print(names(training_80))
+# print(dim(training_80))
+# print(summary(training_80$Class))
+# 
+# ##############################################
+# trainingSet <- training_80
+# testingSet <- testing_80
+# ###
 
+### for 60% training & 20% testing & 20% validation###
+inTrain_60 = createDataPartition(df_bb_2$Class, p = 3/5)[[1]]
+training_60 = df_bb_2[ inTrain_60,-c(1)]
+testing_40 = df_bb_2[-inTrain_60,-c(1)]
+print(names(training_60))
+print(dim(training_60))
+print(summary(training_60$Class))
+set.seed(1990)
+inTest = createDataPartition(testing_40$Class, p = 1/2)[[1]]
+testing_20 = testing_40[inTest,]
+validation_20 = testing_40[-inTest,]
+print(names(testing_20))
+print(dim(testing_20))
+print(summary(testing_20$Class))
 ##############################################
-trainingSet <- training_80
-testingSet <- testing_80
-
+trainingSet <- training_60
+testingSet <- testing_20
+###
 
 ## Class frequencies
 table(trainingSet$Class)
@@ -274,7 +294,3 @@ plot_2 <- ggplot(data = metrics, aes(x = threshold, y = Data, color = Resampled)
     ylab("") + xlab("Probability Cutoff") +
     theme(legend.position = "top")
 ggsave(filename="plot_2.png", plot=plot_2)
-
-
-
-
