@@ -12,16 +12,16 @@
 #         (http://topepo.github.io/caret/custom_models.html)
 
 select_flavors <- "F18"
-df_bb <- read.csv('BB_test_3.csv')
-df_outlier <- read.csv('BB_test_3_2.csv')
-# df_bb <- read.csv('CountBB_BB_0508.csv')
-# df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
+# df_bb <- read.csv('BB_test_3.csv')
+# df_outlier <- read.csv('BB_test_3_2.csv')
+df_bb <- read.csv('CountBB_BB_0508.csv')
+df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
 
 
 ## check for missing packages and install them
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load("caret", "rattle", "rpart.plot","gbm","e1071","nnet","pROC",
-               "MASS","plyr","reshape2","foreach","doParallel")
+               "MASS","plyr","reshape2")
 ##
 library(caret)
 library(rattle)
@@ -31,9 +31,7 @@ library(e1071)
 library(nnet)
 library(pROC)
 library(MASS)
-library(foreach) # usded to fix the error regarding nested parallel computations
-library(doParallel) # usded to fix the error regarding nested parallel computations
-# list_1 <- df_bb$SMILES == df_outlier$SMILES
+
 # 
 # if(! FALSE %in% list_1){
 #     df_bb <- data.frame(df_bb,Class = as.factor(df_outlier[,select_flavors]))
@@ -124,46 +122,27 @@ table(trainingSet$Class)
 
 set.seed(949)
 
-## To avoid the error message occurred by the below chuck,
-## have to add this code (from http://stackoverflow.com/questions/24786089/parrf-on-caret-not-working-for-more-than-one-core)
-### error message:
-# Loading required package: randomForest
-# randomForest 4.6-10
-# Type rfNews() to see new features/changes/bug fixes.
-# Error in train.default(x, y, weights = w, ...) : 
-#     final tuning parameters could not be determined
-# Calls: train -> train.formula -> train -> train.default
-# In addition: Warning messages:
-# 1: In nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo,  :
-# There were missing values in resampled performance measures.
-# 2: In train.default(x, y, weights = w, ...) :
-# missing values found in aggregated results
-# Execution halted
-#######################################################################
-cl <- makePSOCKcluster(2)
-clusterEvalQ(cl, library(foreach))
-registerDoParallel(cl)
 #################################
-# mod0 <- train(Class ~ ., data = trainingSet,
-#               method = "rf",
-#               metric = "ROC",
-#               tuneGrid = data.frame(mtry = 3),
-#               ntree = 500,
-#               trControl = trainControl(method = "repeatedcv",
-#                                        repeats = 5,
-#                                        classProbs = TRUE,
-#                                        summaryFunction = twoClassSummary))
-
-###### for testing 
 mod0 <- train(Class ~ ., data = trainingSet,
               method = "rf",
               metric = "ROC",
               tuneGrid = data.frame(mtry = 3),
-              ntree = 5,
+              ntree = 500,
               trControl = trainControl(method = "repeatedcv",
-                                       repeats = 1,
+                                       repeats = 5,
                                        classProbs = TRUE,
                                        summaryFunction = twoClassSummary))
+
+# ###### for testing 
+# mod0 <- train(Class ~ ., data = trainingSet,
+#               method = "rf",
+#               metric = "ROC",
+#               tuneGrid = data.frame(mtry = 3),
+#               ntree = 5,
+#               trControl = trainControl(method = "repeatedcv",
+#                                        repeats = 1,
+#                                        classProbs = TRUE,
+#                                        summaryFunction = twoClassSummary))
 getTrainPerf(mod0)
 
 ## Get the ROC curve
