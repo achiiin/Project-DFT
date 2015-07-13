@@ -12,16 +12,16 @@
 #         (http://topepo.github.io/caret/custom_models.html)
 
 select_flavors <- "F18"
-# df_bb <- read.csv('BB_test_3.csv')
-# df_outlier <- read.csv('BB_test_3_2.csv')
-df_bb <- read.csv('CountBB_BB_0508.csv')
-df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
+df_bb <- read.csv('BB_test_3.csv')
+df_outlier <- read.csv('BB_test_3_2.csv')
+# df_bb <- read.csv('CountBB_BB_0508.csv')
+# df_outlier <- read.csv('DFT_HOMO_BP86s_multi_1outlier0fitted_F18_V3.2.csv')
 
 
 ## check for missing packages and install them
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load("caret", "rattle", "rpart.plot","gbm","e1071","nnet","pROC",
-               "MASS","plyr","reshape2","foreach")
+               "MASS","plyr","reshape2","foreach","doParallel")
 ##
 library(caret)
 library(rattle)
@@ -31,8 +31,8 @@ library(e1071)
 library(nnet)
 library(pROC)
 library(MASS)
-library(foreach) # usde to fix the error regarding nested parallel computations
-
+library(foreach) # usded to fix the error regarding nested parallel computations
+library(doParallel) # usded to fix the error regarding nested parallel computations
 # list_1 <- df_bb$SMILES == df_outlier$SMILES
 # 
 # if(! FALSE %in% list_1){
@@ -144,13 +144,24 @@ cl <- makePSOCKcluster(2)
 clusterEvalQ(cl, library(foreach))
 registerDoParallel(cl)
 #################################
+# mod0 <- train(Class ~ ., data = trainingSet,
+#               method = "rf",
+#               metric = "ROC",
+#               tuneGrid = data.frame(mtry = 3),
+#               ntree = 500,
+#               trControl = trainControl(method = "repeatedcv",
+#                                        repeats = 5,
+#                                        classProbs = TRUE,
+#                                        summaryFunction = twoClassSummary))
+
+###### for testing 
 mod0 <- train(Class ~ ., data = trainingSet,
               method = "rf",
               metric = "ROC",
               tuneGrid = data.frame(mtry = 3),
-              ntree = 500,
+              ntree = 5,
               trControl = trainControl(method = "repeatedcv",
-                                       repeats = 5,
+                                       repeats = 1,
                                        classProbs = TRUE,
                                        summaryFunction = twoClassSummary))
 getTrainPerf(mod0)
